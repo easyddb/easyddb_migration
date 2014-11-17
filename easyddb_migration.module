@@ -98,6 +98,15 @@ function easyddb_migration_flush_caches() {
     'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBPageMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Campaign'),
+    'machine_name' => 'campaignMigration',
+    'source_type' => 'ding_campaign',
+    'destination_type' => 'ding_campaign',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBCampaignMigration', $arguments['machine_name'], $arguments);
 }
 
 /**

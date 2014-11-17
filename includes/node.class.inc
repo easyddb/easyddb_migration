@@ -229,3 +229,37 @@ class EasyDDBPageMigration extends DrupalNode7Migration {
     $this->removeFieldMapping('body:format');
   }
 }
+
+/**
+ * Handling specific to a Drupal 7 source for node with content type campaign.
+ */
+class EasyDDBCampaignMigration extends DrupalNode7Migration {
+  /**
+   * @param array $arguments
+   */
+  public function __construct(array $arguments) {
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
+
+    //Mapping.
+    $this->addFieldMapping('field_camp_image', 'field_camp_image')
+      ->sourceMigration('fileMigration');
+    $this->addFieldMapping('field_camp_image:alt', 'field_camp_image:alt');
+    $this->addFieldMapping('field_camp_image:title', 'field_camp_image:title');
+    $this->addFieldMapping('field_camp_image:file_class')
+     ->defaultValue('MigrateFileFid');
+
+    $this->addFieldMapping('field_camp_link', 'field_camp_link');
+    $this->addFieldMapping('field_camp_settings', 'field_camp_settings');
+    $this->addFieldMapping('field_camp_text_full', 'field_camp_text_full');
+    $this->addFieldMapping('field_camp_text_full:format', 'field_camp_text_full:format');
+    $this->addFieldMapping('field_camp_text_plain', 'field_camp_text_plain');
+    $this->addFieldMapping('field_camp_weight', 'field_camp_weight');
+
+
+    $this->removeFieldMapping('body');
+    $this->removeFieldMapping('body:language');
+    $this->removeFieldMapping('body:summary');
+    $this->removeFieldMapping('body:format');
+  }
+}
