@@ -51,6 +51,62 @@ function easyddb_migration_flush_caches() {
     'destination_vocabulary' => 'ding_content_tags',
   );
   Migration::registerMigration('EasyDDBTagsMigration', $arguments['machine_name'], $arguments);
+
+  // Common migrations.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of users from easyting'),
+    'machine_name' => 'fileMigration',
+    'destination_dir' => 'public://',
+    'source_dir' => 'public://migration/source',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBFileMigration', $arguments['machine_name'], $arguments);
+
+  // Nodes migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type News'),
+    'machine_name' => 'newsMigration',
+    'source_type' => 'ding_news',
+    'destination_type' => 'ding_news',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBNewsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Events'),
+    'machine_name' => 'eventsMigration',
+    'source_type' => 'ding_event',
+    'destination_type' => 'ding_event',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBEventsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Library'),
+    'machine_name' => 'libraryMigration',
+    'source_type' => 'ding_library',
+    'destination_type' => 'ding_library',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBLibraryMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Page'),
+    'machine_name' => 'pageMigration',
+    'source_type' => 'ding_page',
+    'destination_type' => 'ding_page',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBPageMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Campaign'),
+    'machine_name' => 'campaignMigration',
+    'source_type' => 'ding_campaign',
+    'destination_type' => 'ding_campaign',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBCampaignMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
