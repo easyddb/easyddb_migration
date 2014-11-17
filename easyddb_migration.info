@@ -1,0 +1,7 @@
+name = easyDDB Migration
+description = Migrate content from easyTing to easyDDB
+package = easyDDB
+core = 7.x
+
+dependencies[] = migrate
+dependencies[] = migrate_d2d

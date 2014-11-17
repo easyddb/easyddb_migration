@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * Registering migrate classes.
+ */
+function easyddb_migration_flush_caches() {
+  $common_arguments = array(
+    'source_connection' => 'migration',
+    'source_version' => 7,
+  );
+}
+
+/**
+ * Implements hook_migrate_api().
+ */
+function easyddb_migration_migrate_api() {
+  $api = array(
+    'api' => 2,
+  );
+  return $api;
+}
