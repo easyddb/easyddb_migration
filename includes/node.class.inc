@@ -193,3 +193,39 @@ class EasyDDBLibraryMigration extends DrupalNode7Migration {
     $this->removeFieldMapping('body:format');
   }
 }
+
+/**
+ * Handling specific to a Drupal 7 source for node with content type page.
+ */
+class EasyDDBPageMigration extends DrupalNode7Migration {
+  /**
+   * @param array $arguments
+   */
+  public function __construct(array $arguments) {
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
+
+    //Mapping.
+    $this->addFieldMapping('field_ding_page_tags', 'ding_content_tags')->sourceMigration('tagsMigration');
+    $this->addFieldMapping('field_ding_page_tags:source_type')->defaultValue('tid');
+    $this->addFieldMapping('field_ding_page_tags:create_term')->defaultValue(FALSE);
+
+    $this->addFieldMapping('field_ding_page_materials', 'field_ding_material');
+
+    $this->addFieldMapping('field_ding_page_list_image', 'field_page_list_image')
+      ->sourceMigration('fileMigration');
+    $this->addFieldMapping('field_ding_page_list_image:alt', 'field_page_list_image:alt');
+    $this->addFieldMapping('field_ding_page_list_image:title', 'field_page_list_image:title');
+    $this->addFieldMapping('field_ding_page_list_image:file_class')
+     ->defaultValue('MigrateFileFid');
+
+    $this->addFieldMapping('field_ding_page_lead', 'field_ding_body:summary');
+    $this->addFieldMapping('field_ding_page_body', 'field_ding_body');
+    $this->addFieldMapping('field_ding_page_body:format', 'field_ding_body:format');
+
+    $this->removeFieldMapping('body');
+    $this->removeFieldMapping('body:language');
+    $this->removeFieldMapping('body:summary');
+    $this->removeFieldMapping('body:format');
+  }
+}
