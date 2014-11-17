@@ -8,6 +8,32 @@ function easyddb_migration_flush_caches() {
     'source_connection' => 'migration',
     'source_version' => 7,
   );
+
+  // User migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of roles from easyting'),
+    'machine_name' => 'roleMigration',
+    'role_mappings' => array(
+      "administrator" => "administrators",
+      "local administrator" => "local administrator",
+      "editor" => "editor",
+      "journalist" => "guest blogger",
+    ),
+  );
+  Migration::registerMigration('EasyDDBRoleMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of users from easyting'),
+    'machine_name' => 'userMigration',
+    'role_migration' => 'roleMigration',
+  );
+  Migration::registerMigration('EasyDDBUserMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of users token from easyting'),
+    'machine_name' => 'userTokenMigration',
+  );
+  Migration::registerMigration('EasyDDBUserTokenMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
