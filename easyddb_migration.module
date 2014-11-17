@@ -107,6 +107,43 @@ function easyddb_migration_flush_caches() {
     'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBCampaignMigration', $arguments['machine_name'], $arguments);
+
+  // OG migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og membership type'),
+    'machine_name' => 'ogMembershipTypeMigration',
+  );
+  Migration::registerMigration('EasyDDBOgMembershipTypeMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og membership'),
+    'machine_name' => 'ogMembershipMigration',
+  );
+  Migration::registerMigration('EasyDDBOgMembershipMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og menu'),
+    'machine_name' => 'ogMenuMigration',
+  );
+  Migration::registerMigration('EasyDDBOgMenuMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og role'),
+    'machine_name' => 'ogRoleMigration',
+  );
+  Migration::registerMigration('EasyDDBOgRoleMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og role permission'),
+    'machine_name' => 'ogRolePermissionMigration',
+  );
+  Migration::registerMigration('EasyDDBOgRolePermissionMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og users roles'),
+    'machine_name' => 'ogUsersRolesMigration',
+  );
+  Migration::registerMigration('EasyDDBOgUsersRolesMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
