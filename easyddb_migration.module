@@ -51,6 +51,16 @@ function easyddb_migration_flush_caches() {
     'destination_vocabulary' => 'ding_content_tags',
   );
   Migration::registerMigration('EasyDDBTagsMigration', $arguments['machine_name'], $arguments);
+
+  // Common migrations.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of users from easyting'),
+    'machine_name' => 'fileMigration',
+    'destination_dir' => 'public://',
+    'source_dir' => 'public://migration/source',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBFileMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
