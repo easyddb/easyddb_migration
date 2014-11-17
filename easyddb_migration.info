@@ -9,3 +9,4 @@ dependencies[] = migrate_d2d
 files[] = includes/user.class.inc
 files[] = includes/taxonomy.class.inc
 files[] = includes/file.class.inc
+files[] = includes/node.class.inc
