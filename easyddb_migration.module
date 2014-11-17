@@ -34,6 +34,23 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'userTokenMigration',
   );
   Migration::registerMigration('EasyDDBUserTokenMigration', $arguments['machine_name'], $arguments);
+
+  // Taxonomy migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of taxonomy Category'),
+    'machine_name' => 'categoryMigration',
+    'source_vocabulary' => 'category',
+    'destination_vocabulary' => 'category',
+  );
+  Migration::registerMigration('EasyDDBCategoryMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of taxonomy Tags'),
+    'machine_name' => 'tagsMigration',
+    'source_vocabulary' => 'ding_content_tags',
+    'destination_vocabulary' => 'ding_content_tags',
+  );
+  Migration::registerMigration('EasyDDBTagsMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
