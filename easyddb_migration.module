@@ -71,6 +71,14 @@ function easyddb_migration_flush_caches() {
     'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBNewsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Events'),
+    'machine_name' => 'eventsMigration',
+    'source_type' => 'ding_event',
+    'destination_type' => 'ding_event',
+    'user_migration' => 'userMigration',
+  );
 }
 
 /**
