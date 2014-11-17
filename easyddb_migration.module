@@ -144,6 +144,19 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'ogUsersRolesMigration',
   );
   Migration::registerMigration('EasyDDBOgUsersRolesMigration', $arguments['machine_name'], $arguments);
+
+  // Ting object migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of ting object'),
+    'machine_name' => 'tingObjectMigration',
+  );
+  Migration::registerMigration('EasyDDBTingObjectMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of ting object revision'),
+    'machine_name' => 'tingObjectRevisionMigration',
+  );
+  Migration::registerMigration('EasyDDBTingObjectRevisionMigration', $arguments['machine_name'], $arguments);
 }
 
 /**

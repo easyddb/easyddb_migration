@@ -11,3 +11,4 @@ files[] = includes/taxonomy.class.inc
 files[] = includes/file.class.inc
 files[] = includes/node.class.inc
 files[] = includes/og.class.inc
+files[] = includes/ting_object.class.inc
