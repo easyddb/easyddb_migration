@@ -157,6 +157,31 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'tingObjectRevisionMigration',
   );
   Migration::registerMigration('EasyDDBTingObjectRevisionMigration', $arguments['machine_name'], $arguments);
+
+  // Bookmark migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of bookmark'),
+    'machine_name' => 'bookmarkMigration',
+  );
+  Migration::registerMigration('EasyDDBBookmarkMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of bookmark types'),
+    'machine_name' => 'bookmarkTypesMigration',
+  );
+  Migration::registerMigration('EasyDDBBookmarkTypesMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of bookmark counts'),
+    'machine_name' => 'bookmarkCountsMigration',
+  );
+  Migration::registerMigration('EasyDDBBookmarkCountsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of bookmark content'),
+    'machine_name' => 'bookmarkContentMigration',
+  );
+  Migration::registerMigration('EasyDDBBookmarkContentMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
