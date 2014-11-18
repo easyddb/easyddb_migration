@@ -182,6 +182,22 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'bookmarkContentMigration',
   );
   Migration::registerMigration('EasyDDBBookmarkContentMigration', $arguments['machine_name'], $arguments);
+
+  // Menu migration group.
+  $arguments = $common_arguments + array(
+    'machine_name' => 'menuMigration',
+    'description' => t('Migration of menu.'),
+  );
+  Migration::registerMigration('EasyDDBMenuMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'menuLinksMigration',
+    'description' => t('Migration of menu links'),
+    'menu_migration' => 'menuMigration',
+    'node_migrations' => array('newsMigration', 'eventsMigration', 'libraryMigration', 'pageMigration', 'campaignMigration'),
+    'term_migrations' => array('categoryMigration', 'tagsMigration'),
+  );
+  Migration::registerMigration('EasyDDBMenuLinksMigration',  $arguments['machine_name'], $arguments);
 }
 
 /**
