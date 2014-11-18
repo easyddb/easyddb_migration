@@ -198,6 +198,31 @@ function easyddb_migration_flush_caches() {
     'term_migrations' => array('categoryMigration', 'tagsMigration'),
   );
   Migration::registerMigration('EasyDDBMenuLinksMigration',  $arguments['machine_name'], $arguments);
+
+  // Dibs migration group.
+  $arguments = $common_arguments + array(
+    'machine_name' => 'dibsSettingsMigration',
+    'description' => t('Migration of dibs settings.'),
+  );
+  Migration::registerMigration('EasyDDBDibsSettingsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'dibsTransactionsMigration',
+    'description' => t('Migration of dibs transactions.'),
+  );
+  Migration::registerMigration('EasyDDBDibsTransactionsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'dibsTransactionsLogMigration',
+    'description' => t('Migration of dibs transactions log.'),
+  );
+  Migration::registerMigration('EasyDDBDibsTransactionsLogMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'dibsSplitPaymentsMigration',
+    'description' => t('Migration of dibs split payments.'),
+  );
+  Migration::registerMigration('EasyDDBDibsSplitPaymentsMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
