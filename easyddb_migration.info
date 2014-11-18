@@ -13,3 +13,4 @@ files[] = includes/node.class.inc
 files[] = includes/og.class.inc
 files[] = includes/ting_object.class.inc
 files[] = includes/bookmark.class.inc
+files[] = includes/menu.class.inc
