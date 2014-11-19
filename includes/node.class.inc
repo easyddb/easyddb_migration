@@ -20,7 +20,7 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_news_category:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_ding_news_category:create_term')->defaultValue(FALSE);
 
-    // $this->addFieldMapping('ding_news_groups_ref', 'group_audience');
+    $this->addFieldMapping('og_group_ref', 'og_group_ref')->sourceMigration('libraryMigration');
 
     $this->addFieldMapping('field_ding_news_materials', 'field_materials');
 
@@ -101,8 +101,7 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_event_list_image:file_class')
      ->defaultValue('MigrateFileFid');
 
-    // $this->addFieldMapping('og_group_ref', 'field_audience');
-    // $this->addFieldMapping('ding_event_groups_ref', 'og_group_ref');
+    $this->addFieldMapping('og_group_ref', 'og_group_ref')->sourceMigration('libraryMigration');
 
     $this->addFieldMapping('field_ding_event_body', 'field_ding_body');
     $this->addFieldMapping('field_ding_event_lead', 'field_ding_body:summary');
@@ -181,7 +180,6 @@ class EasyDDBLibraryMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_library_links:attributes', 'field_links:attributes');
 
     $this->addFieldMapping('group_group', 'group_group');
-    // $this->addFieldMapping('ding_event_groups_ref', 'og_group_ref');
 
     $this->addFieldMapping('field_ding_library_lead', 'field_ding_body:summary');
     $this->addFieldMapping('field_ding_library_body', 'field_ding_body');
