@@ -100,7 +100,7 @@ class EasyDDBOgMembershipMigration extends DynamicMigration {
     $this->addFieldMapping('type', 'type');
     $this->addFieldMapping('etid', 'etid');
     $this->addFieldMapping('entity_type', 'entity_type');
-    $this->addFieldMapping('gid', 'gid');
+    $this->addFieldMapping('gid', 'gid')->sourceMigration('libraryMigration');
     $this->addFieldMapping('group_type', 'group_type');
     $this->addFieldMapping('state', 'state');
     $this->addFieldMapping('created', 'created');
@@ -115,7 +115,11 @@ class EasyDDBOgMembershipMigration extends DynamicMigration {
         'userMigration'
       ),
       'node' => array(
-        'newsMigration'
+        'newsMigration',
+        'eventsMigration',
+        'libraryMigration',
+        'pageMigration',
+        'campaignMigration',
       ),
     );
     $e->etid = NULL;
@@ -124,9 +128,6 @@ class EasyDDBOgMembershipMigration extends DynamicMigration {
       $source_migration->sourceKeyMap['nid'] = 'nid';
       $destid = $source_migration->getMap()->lookupDestinationID(array($r->etid));
       if (!empty($destid)) {
-        if ($r->entity_type == 'node') {
-          $e->field_name = $source_migration->destination->getBundle() . '_groups_ref';
-        }
         $e->etid = current($destid);
       }
     }
