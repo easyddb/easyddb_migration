@@ -8,10 +8,12 @@
  * Handling specific to a Drupal 7 source for node with content type news.
  */
 class EasyDDBNewsMigration extends DrupalNode7Migration {
+  private $ed_module = FALSE;
   /**
    * @param array $arguments
    */
   public function __construct(array $arguments) {
+    $this->ed_module = module_exists('easyddb_editorial_dashboard');
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
 
@@ -19,8 +21,6 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_news_category', 'field_category')->sourceMigration('categoryMigration');
     $this->addFieldMapping('field_ding_news_category:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_ding_news_category:create_term')->defaultValue(FALSE);
-
-    // $this->addFieldMapping('ding_news_groups_ref', 'group_audience');
 
     $this->addFieldMapping('field_ding_news_materials', 'field_materials');
 
@@ -46,10 +46,47 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_news_title_image:alt', 'field_main_image:alt');
     $this->addFieldMapping('field_ding_news_title_image:title', 'field_main_image:title');
 
+    if ($this->ed_module) {
+      $this->addFieldMapping('field_editorial_status', 'edns_status')
+        ->defaultValue('ed_appr');
+    }
+
     $this->removeFieldMapping('body');
     $this->removeFieldMapping('body:language');
     $this->removeFieldMapping('body:summary');
     $this->removeFieldMapping('body:format');
+  }
+
+  protected function query() {
+    $query = parent::query();
+    $query->join('editorial_dashboard_node_status', 'edns', 'n.nid = edns.nid');
+    $query->fields('edns', array('status'));
+
+    return $query;
+  }
+
+  public function prepare($entity, $row) {
+    $ed_nodes = variable_get('editorial_content_types');
+    $node_ed = !empty($ed_nodes['ding_news']);
+    $node_ed_status = $row->edns_status;
+    $node_enabled = $entity->status == 1;
+
+    if ($node_ed_status && $this->ed_module && $node_ed) {
+      $editorial_status = (int) $entity->field_editorial_status[LANGUAGE_NONE][0]['value'];
+      $ed_status_mapping = array(
+        1 => 'ed_new',
+        2 => 'ed_pushed',
+        4 => 'ed_rej',
+        8 => 'ed_appr',
+      );
+
+      if ($node_enabled) {
+        $entity->field_editorial_status[LANGUAGE_NONE][0]['value'] = 'ed_appr';
+      }
+      else {
+        $entity->field_editorial_status[LANGUAGE_NONE][0]['value'] = $ed_status_mapping[$editorial_status];
+      }
+    }
   }
 }
 

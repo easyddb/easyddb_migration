@@ -72,7 +72,7 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'newsMigration',
     'source_type' => 'ding_news',
     'destination_type' => 'ding_news',
-    'user_migration' => 'userMigration',
+//    'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBNewsMigration', $arguments['machine_name'], $arguments);
 
@@ -81,7 +81,7 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'eventsMigration',
     'source_type' => 'ding_event',
     'destination_type' => 'ding_event',
-    'user_migration' => 'userMigration',
+//    'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBEventsMigration', $arguments['machine_name'], $arguments);
 
@@ -90,7 +90,7 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'libraryMigration',
     'source_type' => 'ding_library',
     'destination_type' => 'ding_library',
-    'user_migration' => 'userMigration',
+//    'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBLibraryMigration', $arguments['machine_name'], $arguments);
 
@@ -99,7 +99,7 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'pageMigration',
     'source_type' => 'ding_page',
     'destination_type' => 'ding_page',
-    'user_migration' => 'userMigration',
+//    'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBPageMigration', $arguments['machine_name'], $arguments);
 
@@ -108,7 +108,7 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'campaignMigration',
     'source_type' => 'ding_campaign',
     'destination_type' => 'ding_campaign',
-    'user_migration' => 'userMigration',
+//    'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBCampaignMigration', $arguments['machine_name'], $arguments);
 
