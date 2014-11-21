@@ -14,5 +14,6 @@ class EasyDDBFileMigration extends DrupalFile7Migration {
   public function __construct(array $arguments) {
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('default');
+    $this->destination = new MigrateDestinationMedia('image');
   }
 }
