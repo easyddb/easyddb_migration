@@ -8,10 +8,17 @@
  * Handling specific to a Drupal 7 source for node with content type news.
  */
 class EasyDDBNewsMigration extends DrupalNode7Migration {
+
+  /**
+   * @var bool editorial dashboard module enabled.
+   */
+  private $ed_module = FALSE;
+
   /**
    * @param array $arguments
    */
   public function __construct(array $arguments) {
+    $this->ed_module = module_exists('easyddb_editorial_dashboard');
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
 
@@ -53,10 +60,48 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_news_title_image:alt', 'field_main_image:alt');
     $this->addFieldMapping('field_ding_news_title_image:title', 'field_main_image:title');
 
+    // Migrate Editorial Dashboard statuses.
+    if ($this->ed_module) {
+      $this->addFieldMapping('field_editorial_status', 'edns_status')
+        ->defaultValue('ed_appr');
+    }
+
     $this->removeFieldMapping('body');
     $this->removeFieldMapping('body:language');
     $this->removeFieldMapping('body:summary');
     $this->removeFieldMapping('body:format');
+  }
+
+  protected function query() {
+    $query = parent::query();
+    $query->join('editorial_dashboard_node_status', 'edns', 'n.nid = edns.nid');
+    $query->fields('edns', array('status'));
+
+    return $query;
+  }
+
+  public function prepare($entity, $row) {
+    $ed_nodes = variable_get('editorial_content_types');
+    $node_ed = !empty($ed_nodes['ding_news']);
+    $node_ed_status = $row->edns_status;
+    $node_enabled = $entity->status == 1;
+
+    if ($node_ed_status && $this->ed_module && $node_ed) {
+      $editorial_status = (int) $entity->field_editorial_status[LANGUAGE_NONE][0]['value'];
+      $ed_status_mapping = array(
+        1 => 'ed_new',
+        2 => 'ed_pushed',
+        4 => 'ed_rej',
+        8 => 'ed_appr',
+      );
+
+      if ($node_enabled) {
+        $entity->field_editorial_status[LANGUAGE_NONE][0]['value'] = 'ed_appr';
+      }
+      else {
+        $entity->field_editorial_status[LANGUAGE_NONE][0]['value'] = $ed_status_mapping[$editorial_status];
+      }
+    }
   }
 }
 
@@ -64,10 +109,17 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
  * Handling specific to a Drupal 7 source for node with content type events.
  */
 class EasyDDBEventsMigration extends DrupalNode7Migration {
+
+  /**
+   * @var bool editorial dashboard module enabled.
+   */
+  private $ed_module = FALSE;
+
   /**
    * @param array $arguments
    */
   public function __construct(array $arguments) {
+    $this->ed_module = module_exists('easyddb_editorial_dashboard');
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
 
@@ -125,18 +177,54 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_event_category:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_ding_event_category:create_term')->defaultValue(FALSE);
 
+    // Migrate Editorial Dashboard statuses.
+    if ($this->ed_module) {
+      $this->addFieldMapping('field_editorial_status', 'edns_status')
+        ->defaultValue('ed_appr');
+    }
+
     $this->removeFieldMapping('body');
     $this->removeFieldMapping('body:language');
     $this->removeFieldMapping('body:summary');
     $this->removeFieldMapping('body:format');
   }
 
-  public function prepare($e, $r) {
-    if (isset($r->field_event_date[0]) && !empty($r->field_event_date[0])) {
-      $e->field_ding_event_date['und'][0]['value'] = $r->field_event_date[0];
+  protected function query() {
+    $query = parent::query();
+    $query->join('editorial_dashboard_node_status', 'edns', 'n.nid = edns.nid');
+    $query->fields('edns', array('status'));
+
+    return $query;
+  }
+
+  public function prepare($entity, $row) {
+    if (isset($row->field_event_date[0]) && !empty($row->field_event_date[0])) {
+      $entity->field_ding_event_date['und'][0]['value'] = $row->field_event_date[0];
     }
-    if (isset($r->{'field_event_date:value2'}[0]) && !empty($r->{'field_event_date:value2'}[0])) {
-      $e->field_ding_event_date['und'][0]['value2'] = $r->{'field_event_date:value2'}[0];
+    if (isset($row->{'field_event_date:value2'}[0]) && !empty($row->{'field_event_date:value2'}[0])) {
+      $entity->field_ding_event_date['und'][0]['value2'] = $row->{'field_event_date:value2'}[0];
+    }
+
+    $ed_nodes = variable_get('editorial_content_types');
+    $node_ed = !empty($ed_nodes['ding_event']);
+    $node_ed_status = $row->edns_status;
+    $node_enabled = $entity->status == 1;
+
+    if ($node_ed_status && $this->ed_module && $node_ed) {
+      $editorial_status = (int) $entity->field_editorial_status[LANGUAGE_NONE][0]['value'];
+      $ed_status_mapping = array(
+        1 => 'ed_new',
+        2 => 'ed_pushed',
+        4 => 'ed_rej',
+        8 => 'ed_appr',
+      );
+
+      if ($node_enabled) {
+        $entity->field_editorial_status[LANGUAGE_NONE][0]['value'] = 'ed_appr';
+      }
+      else {
+        $entity->field_editorial_status[LANGUAGE_NONE][0]['value'] = $ed_status_mapping[$editorial_status];
+      }
     }
   }
 }
