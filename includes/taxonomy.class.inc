@@ -40,13 +40,13 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
     $handler = new stdClass();
     $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
     $handler->api_version = 1;
-    $handler->name = '';
-    $handler->task = 'term_view';
+    $handler->name = $handler_name;
+    $handler->task = $page;
     $handler->subtask = '';
     $handler->handler = 'panel_context';
-    $handler->weight = 4;
+    $handler->weight = 99;
     $handler->conf = array(
-      'title' => '',
+      'title' => 'Editorial base term panel',
       'no_blocks' => 0,
       'pipeline' => 'ipe',
       'body_classes_to_remove' => '',
@@ -56,6 +56,26 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
       'contexts' => array(),
       'relationships' => array(),
       'access' => array(
+        'plugins' => array(
+          0 => array(
+            'name' => 'entity_bundle:taxonomy_term',
+            'settings' => array(
+              'type' => array(
+                'editorial_base' => 'editorial_base',
+              ),
+            ),
+            'context' => 'argument_term_1',
+            'not' => FALSE,
+          ),
+          1 => array(
+            'name' => 'perm',
+            'settings' => array(
+              'perm' => 'view editorialbase panels terms',
+            ),
+            'context' => 'logged-in-user',
+            'not' => FALSE,
+          ),
+        ),
         'logic' => 'and',
       ),
     );
@@ -84,28 +104,28 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
     $display->title = '';
     $display->content = array();
     $display->panels = array();
-    $pane = new stdClass();
-    $pane->pid = 'new-1';
-    $pane->panel = 'main_content';
-    $pane->type = 'views_panes';
-    $pane->subtype = 'tags_list-ding_content_tags';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'context' => array(
-        0 => 'argument_term_1',
-      ),
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = array();
-    $display->content['new-1'] = $pane;
-    $display->panels['main_content'][0] = 'new-1';
+      $pane = new stdClass();
+      $pane->pid = 'new-1';
+      $pane->panel = 'main_content';
+      $pane->type = 'views_panes';
+      $pane->subtype = 'tags_list-ding_content_tags';
+      $pane->shown = TRUE;
+      $pane->access = array();
+      $pane->configuration = array(
+        'context' => array(
+          0 => 'argument_term_1',
+        ),
+      );
+      $pane->cache = array();
+      $pane->style = array(
+        'settings' => NULL,
+      );
+      $pane->css = array();
+      $pane->extras = array();
+      $pane->position = 0;
+      $pane->locks = array();
+      $display->content['new-1'] = $pane;
+      $display->panels['main_content'][0] = 'new-1';
     $display->hide_title = PANELS_TITLE_FIXED;
     $display->title_pane = '0';
     $handler->conf['display'] = $display;
@@ -118,7 +138,7 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
       return FALSE;
     }
 
-    $handler_name = 'term_view_panel_context_4';
+    $handler_name = variable_get('editorial_base_term_panel_handler', 'term_editorial_base_panel_context');
 
     $page = 'term_view';
     $task = page_manager_get_task($page);
