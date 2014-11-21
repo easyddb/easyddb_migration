@@ -247,6 +247,12 @@ function easyddb_migration_flush_caches() {
     'vocabulary_description' => t('Vocabulary for dams module.'),
   );
   Migration::registerMigration('EasyDDBTaxonomyMigration', $dams_category['machine_name'], $dams_category);
+
+  $editorial_dashboard_comments = $common_arguments + array(
+      'description'  => t('Migration of editorial dashboard comments'),
+      'machine_name' => 'editorialDashboardCommentsMigration',
+  );
+  Migration::registerMigration('EasyDDBEditorialDashboardCommentsMigration', $editorial_dashboard_comments['machine_name'], $editorial_dashboard_comments);
 }
 
 /**
