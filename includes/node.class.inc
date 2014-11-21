@@ -15,6 +15,13 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
 
+    // Dependencies.
+    $this->dependencies[] ='fileMigration';
+    $this->dependencies[] ='categoryMigration';
+    $this->dependencies[] ='tagsMigration';
+    $this->dependencies[] ='sectionMigration';
+    $this->dependencies[] ='damsCategoryMigration';
+
     //Mapping.
     $this->addFieldMapping('field_ding_news_category', 'field_category')->sourceMigration('categoryMigration');
     $this->addFieldMapping('field_ding_news_category:source_type')->defaultValue('tid');
@@ -63,6 +70,13 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
   public function __construct(array $arguments) {
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
+
+    // Dependencies.
+    $this->dependencies[] ='fileMigration';
+    $this->dependencies[] ='categoryMigration';
+    $this->dependencies[] ='tagsMigration';
+    $this->dependencies[] ='sectionMigration';
+    $this->dependencies[] ='damsCategoryMigration';
 
     //Mapping.
     $this->addFieldMapping('field_ding_event_location', 'field_address');
@@ -138,6 +152,13 @@ class EasyDDBLibraryMigration extends DrupalNode7Migration {
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
 
+    // Dependencies.
+    $this->dependencies[] ='fileMigration';
+    $this->dependencies[] ='categoryMigration';
+    $this->dependencies[] ='tagsMigration';
+    $this->dependencies[] ='sectionMigration';
+    $this->dependencies[] ='damsCategoryMigration';
+
     //Mapping.
     $this->addFieldMapping('field_ding_library_addresse', 'field_address');
     $this->addFieldMapping('field_ding_library_addresse:administrative_area', 'field_address:administrative_area');
@@ -203,6 +224,13 @@ class EasyDDBPageMigration extends DrupalNode7Migration {
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
 
+    // Dependencies.
+    $this->dependencies[] ='fileMigration';
+    $this->dependencies[] ='categoryMigration';
+    $this->dependencies[] ='tagsMigration';
+    $this->dependencies[] ='sectionMigration';
+    $this->dependencies[] ='damsCategoryMigration';
+
     //Mapping.
     $this->addFieldMapping('field_ding_page_tags', 'ding_content_tags')->sourceMigration('tagsMigration');
     $this->addFieldMapping('field_ding_page_tags:source_type')->defaultValue('tid');
@@ -238,6 +266,13 @@ class EasyDDBCampaignMigration extends DrupalNode7Migration {
   public function __construct(array $arguments) {
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
+
+    // Dependencies.
+    $this->dependencies[] ='fileMigration';
+    $this->dependencies[] ='categoryMigration';
+    $this->dependencies[] ='tagsMigration';
+    $this->dependencies[] ='sectionMigration';
+    $this->dependencies[] ='damsCategoryMigration';
 
     //Mapping.
     $this->addFieldMapping('field_camp_image', 'field_camp_image')
