@@ -258,7 +258,11 @@ function easyddb_migration_flush_caches() {
   );
   Migration::registerMigration('EasyDDBDibsSplitPaymentsMigration', $arguments['machine_name'], $arguments);
 
-
+  $editorial_dashboard_comments = $common_arguments + array(
+      'description'  => t('Migration of editorial dashboard comments'),
+      'machine_name' => 'editorialDashboardCommentsMigration',
+  );
+  Migration::registerMigration('EasyDDBEditorialDashboardCommentsMigration', $editorial_dashboard_comments['machine_name'], $editorial_dashboard_comments);
 }
 
 /**
