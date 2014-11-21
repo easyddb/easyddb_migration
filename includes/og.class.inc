@@ -62,8 +62,13 @@ class EasyDDBOgMembershipMigration extends DynamicMigration {
     $group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
     parent::__construct($group);
 
-    // @todo We can get list of migration with this function. But it doesnt works. Investigate.
-    // $this->migrations_list = migrate_migrations();
+    // Dependencies.
+    $this->dependencies[] ='ogMembershipTypeMigration';
+    $this->dependencies[] ='newsMigration';
+    $this->dependencies[] ='eventsMigration';
+    $this->dependencies[] ='libraryMigration';
+    $this->dependencies[] ='pageMigration';
+    $this->dependencies[] ='campaignMigration';
 
     // Set table name of source data.
     $table_name = 'og_membership';
