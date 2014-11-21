@@ -75,7 +75,8 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
     $query = Database::getConnection('default', $this->sourceConnection)
              ->select('menu_links', 'm')
              ->fields('m')
-             ->condition('m.menu_name', array('user-menu', 'menu-secondary-menu'), 'NOT IN');
+             ->condition('m.menu_name', array('user-menu', 'menu-secondary-menu'), 'NOT IN')
+             ->condition('m.mlid', 2, '>');
     return $query;
   }
 

@@ -37,12 +37,22 @@ function easyddb_migration_flush_caches() {
 
   // Taxonomy migration group.
   $arguments = $common_arguments + array(
-    'description'            => t('Migration of taxonomy Category'),
-    'machine_name'           => 'categoryMigration',
+    'description'            => t('Migration of taxonomy News Category'),
+    'machine_name'           => 'newsCategoryMigration',
     'source_vocabulary'      => 'category',
-    'destination_vocabulary' => 'category',
-    'vocabulary_name'        => t('Category'),
-    'vocabulary_description' => t('Categories vocabulary.'),
+    'destination_vocabulary' => 'news_category',
+    'vocabulary_name'        => t('News category'),
+    'vocabulary_description' => t('News categories vocabulary.'),
+  );
+  Migration::registerMigration('EasyDDBTaxonomyMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description'            => t('Migration of taxonomy Event Category'),
+    'machine_name'           => 'eventCategoryMigration',
+    'source_vocabulary'      => 'category',
+    'destination_vocabulary' => 'event_category',
+    'vocabulary_name'        => t('Event category'),
+    'vocabulary_description' => t('Event categories vocabulary.'),
   );
   Migration::registerMigration('EasyDDBTaxonomyMigration', $arguments['machine_name'], $arguments);
 
@@ -55,6 +65,26 @@ function easyddb_migration_flush_caches() {
     'vacabulary_description' => t('Tags vocabulary.'),
   );
   Migration::registerMigration('EasyDDBTaxonomyMigration', $arguments['machine_name'], $arguments);
+
+  $section = $common_arguments + array(
+    'description'            => t('Migration of taxonomy Section'),
+    'machine_name'           => 'sectionMigration',
+    'source_vocabulary'      => 'eddb_editorial_base',
+    'destination_vocabulary' => 'editorial_base',
+    'vocabulary_name'        => t('Section'),
+    'vocabulary_description' => t('Vocabulary for Editorial Base functionality.'),
+  );
+  Migration::registerMigration('EasyDDBTaxonomyMigration', $section['machine_name'], $section);
+
+  $dams_category = $common_arguments + array(
+    'description'            => t('Migration of taxonomy Mediebibliotekskategorier'),
+    'machine_name'           => 'damsCategoryMigration',
+    'source_vocabulary'      => 'dams_category',
+    'destination_vocabulary' => 'dams_category',
+    'vocabulary_name'        => t('Mediebibliotekskategorier'),
+    'vocabulary_description' => t('Vocabulary for dams module.'),
+  );
+  Migration::registerMigration('EasyDDBTaxonomyMigration', $dams_category['machine_name'], $dams_category);
 
   // Common migrations.
   $arguments = $common_arguments + array(
@@ -199,7 +229,7 @@ function easyddb_migration_flush_caches() {
     'description' => t('Migration of menu links'),
     'menu_migration' => 'menuMigration',
     'node_migrations' => array('newsMigration', 'eventsMigration', 'libraryMigration', 'pageMigration', 'campaignMigration'),
-    'term_migrations' => array('categoryMigration', 'tagsMigration'),
+    'term_migrations' => array('newsCategoryMigration', 'eventCategoryMigration', 'tagsMigration', 'sectionMigration'),
   );
   Migration::registerMigration('EasyDDBMenuLinksMigration',  $arguments['machine_name'], $arguments);
 
@@ -228,25 +258,7 @@ function easyddb_migration_flush_caches() {
   );
   Migration::registerMigration('EasyDDBDibsSplitPaymentsMigration', $arguments['machine_name'], $arguments);
 
-  $section = $common_arguments + array(
-    'description'            => t('Migration of taxonomy Section'),
-    'machine_name'           => 'sectionMigration',
-    'source_vocabulary'      => 'eddb_editorial_base',
-    'destination_vocabulary' => 'editorial_base',
-    'vocabulary_name'        => t('Section'),
-    'vocabulary_description' => t('Vocabulary for Editorial Base functionality.'),
-  );
-  Migration::registerMigration('EasyDDBTaxonomyMigration', $section['machine_name'], $section);
 
-  $dams_category = $common_arguments + array(
-    'description'            => t('Migration of taxonomy Mediebibliotekskategorier'),
-    'machine_name'           => 'damsCategoryMigration',
-    'source_vocabulary'      => 'dams_category',
-    'destination_vocabulary' => 'dams_category',
-    'vocabulary_name'        => t('Mediebibliotekskategorier'),
-    'vocabulary_description' => t('Vocabulary for dams module.'),
-  );
-  Migration::registerMigration('EasyDDBTaxonomyMigration', $dams_category['machine_name'], $dams_category);
 }
 
 /**

@@ -10,7 +10,6 @@ class EasyDDBOgMembershipTypeMigration extends DynamicMigration {
     $group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
     parent::__construct($group);
 
-
     // Set table name of source data.
     $table_name = 'og_membership_type';
 
@@ -63,12 +62,7 @@ class EasyDDBOgMembershipMigration extends DynamicMigration {
     parent::__construct($group);
 
     // Dependencies.
-    $this->dependencies[] ='ogMembershipTypeMigration';
-    $this->dependencies[] ='newsMigration';
-    $this->dependencies[] ='eventsMigration';
-    $this->dependencies[] ='libraryMigration';
-    $this->dependencies[] ='pageMigration';
-    $this->dependencies[] ='campaignMigration';
+    $this->dependencies[] ='menuLinksMigration';
 
     // Set table name of source data.
     $table_name = 'og_membership';

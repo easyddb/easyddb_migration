@@ -24,13 +24,13 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
 
     // Dependencies.
     $this->dependencies[] ='fileMigration';
-    $this->dependencies[] ='categoryMigration';
+    $this->dependencies[] ='newsCategoryMigration';
     $this->dependencies[] ='tagsMigration';
     $this->dependencies[] ='sectionMigration';
     $this->dependencies[] ='damsCategoryMigration';
 
     //Mapping.
-    $this->addFieldMapping('field_ding_news_category', 'field_category')->sourceMigration('categoryMigration');
+    $this->addFieldMapping('field_ding_news_category', 'field_category')->sourceMigration('newsCategoryMigration');
     $this->addFieldMapping('field_ding_news_category:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_ding_news_category:create_term')->defaultValue(FALSE);
 
@@ -52,6 +52,10 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_news_tags', 'ding_content_tags')->sourceMigration('tagsMigration');
     $this->addFieldMapping('field_ding_news_tags:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_ding_news_tags:create_term')->defaultValue(FALSE);
+
+    $this->addFieldMapping('field_editorial_base', 'field_editorial_base_n')->sourceMigration('sectionMigration');
+    $this->addFieldMapping('field_editorial_base:source_type')->defaultValue('tid');
+    $this->addFieldMapping('field_editorial_base:create_term')->defaultValue(FALSE);
 
     $this->addFieldMapping('field_ding_news_title_image', 'field_main_image')
       ->sourceMigration('fileMigration');
@@ -125,9 +129,8 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
 
     // Dependencies.
     $this->dependencies[] ='fileMigration';
-    $this->dependencies[] ='categoryMigration';
+    $this->dependencies[] ='eventCategoryMigration';
     $this->dependencies[] ='tagsMigration';
-    $this->dependencies[] ='sectionMigration';
     $this->dependencies[] ='damsCategoryMigration';
 
     //Mapping.
@@ -173,7 +176,7 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_event_lead', 'field_ding_body:summary');
     $this->addFieldMapping('field_ding_event_body:format', 'field_ding_body:format');
 
-    $this->addFieldMapping('field_ding_event_category', 'field_category')->sourceMigration('categoryMigration');
+    $this->addFieldMapping('field_ding_event_category', 'field_category')->sourceMigration('eventCategoryMigration');
     $this->addFieldMapping('field_ding_event_category:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_ding_event_category:create_term')->defaultValue(FALSE);
 
@@ -242,10 +245,7 @@ class EasyDDBLibraryMigration extends DrupalNode7Migration {
 
     // Dependencies.
     $this->dependencies[] ='fileMigration';
-    $this->dependencies[] ='categoryMigration';
     $this->dependencies[] ='tagsMigration';
-    $this->dependencies[] ='sectionMigration';
-    $this->dependencies[] ='damsCategoryMigration';
 
     //Mapping.
     $this->addFieldMapping('field_ding_library_addresse', 'field_address');
@@ -314,10 +314,7 @@ class EasyDDBPageMigration extends DrupalNode7Migration {
 
     // Dependencies.
     $this->dependencies[] ='fileMigration';
-    $this->dependencies[] ='categoryMigration';
     $this->dependencies[] ='tagsMigration';
-    $this->dependencies[] ='sectionMigration';
-    $this->dependencies[] ='damsCategoryMigration';
 
     //Mapping.
     $this->addFieldMapping('field_ding_page_tags', 'ding_content_tags')->sourceMigration('tagsMigration');
@@ -357,9 +354,7 @@ class EasyDDBCampaignMigration extends DrupalNode7Migration {
 
     // Dependencies.
     $this->dependencies[] ='fileMigration';
-    $this->dependencies[] ='categoryMigration';
     $this->dependencies[] ='tagsMigration';
-    $this->dependencies[] ='sectionMigration';
     $this->dependencies[] ='damsCategoryMigration';
 
     //Mapping.
