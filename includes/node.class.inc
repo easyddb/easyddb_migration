@@ -28,6 +28,7 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $this->dependencies[] ='tagsMigration';
     $this->dependencies[] ='sectionMigration';
     $this->dependencies[] ='damsCategoryMigration';
+    $this->dependencies[] ='libraryMigration';
 
     //Mapping.
     $this->addFieldMapping('field_ding_news_category', 'field_category')->sourceMigration('newsCategoryMigration');
@@ -85,7 +86,7 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-    $ed_nodes = variable_get('editorial_content_types');
+    $ed_nodes = variable_get('editorial_base_content_types');
     $node_ed = !empty($ed_nodes['ding_news']);
     $node_ed_status = $row->edns_status;
     $node_enabled = $entity->status == 1;
@@ -201,14 +202,17 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
+
     if (isset($row->field_event_date[0]) && !empty($row->field_event_date[0])) {
       $entity->field_ding_event_date['und'][0]['value'] = $row->field_event_date[0];
+      $entity->field_ding_event_date['und'][0]['timezone'] = "Europe/Copenhagen";
     }
     if (isset($row->{'field_event_date:value2'}[0]) && !empty($row->{'field_event_date:value2'}[0])) {
       $entity->field_ding_event_date['und'][0]['value2'] = $row->{'field_event_date:value2'}[0];
+      $entity->field_ding_event_date['und'][0]['timezone'] = "Europe/Copenhagen";
     }
 
-    $ed_nodes = variable_get('editorial_content_types');
+    $ed_nodes = variable_get('editorial_base_content_types');
     $node_ed = !empty($ed_nodes['ding_event']);
     $node_ed_status = $row->edns_status;
     $node_enabled = $entity->status == 1;
