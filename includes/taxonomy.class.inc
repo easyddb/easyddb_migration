@@ -37,6 +37,8 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
   }
 
   private function editorialBaseDefaultPanelVariant() {
+    $handler_name = 'term_editorial_base_panel_context';
+
     $handler = new stdClass();
     $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
     $handler->api_version = 1;
@@ -168,6 +170,7 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
     $handler_name = "term_view_panel_context_tid_{$tid}";
     $variant_title = t('Variant for (@term_name)', array('@term_name' => $term->name));
     $pipeline = module_exists('panels_ipe') ? 'ipe' : 'standard';
+    unset($handler->did);
     $handler->name = $handler_name;
     $handler->conf['title'] = $variant_title;
     $handler->conf['pipeline'] = $pipeline;
