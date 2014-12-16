@@ -263,6 +263,13 @@ function easyddb_migration_flush_caches() {
       'machine_name' => 'editorialDashboardCommentsMigration',
   );
   Migration::registerMigration('EasyDDBEditorialDashboardCommentsMigration', $editorial_dashboard_comments['machine_name'], $editorial_dashboard_comments);
+
+  // Opening hours migration group.
+  $arguments = $common_arguments + array(
+    'machine_name' => 'openingHoursMigration',
+    'description' => t('Migration of opening Hours.'),
+  );
+  Migration::registerMigration('EasyDDBOpeningHoursMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
