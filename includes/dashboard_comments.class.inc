@@ -29,8 +29,9 @@ class EasyDDBEditorialDashboardCommentsMigration extends DynamicMigration {
     );
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
-      ->select('dashboard_comments', 'dc')
-      ->fields('dc', array('cid', 'nid', 'uid', 'timestamp', 'comment'));
+      ->select('dashboard_comments', 'dc');
+    $query->innerJoin('node', 'n', 'n.nid=dc.nid');
+    $query->fields('dc', array('cid', 'nid', 'uid', 'timestamp', 'comment'));
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
@@ -38,7 +39,7 @@ class EasyDDBEditorialDashboardCommentsMigration extends DynamicMigration {
 
     // Set mapping for fields.
     $this->addFieldMapping('cid', 'cid');
-    $this->addFieldMapping('nid', 'nid')->sourceMigration(array('eventsMigration', 'newsMigration'));
+    $this->addFieldMapping('nid', 'nid')->sourceMigration(array('eventsMigration', 'newsMigration', 'pageMigration', 'campaignMigration', 'libraryMigration'));
     $this->addFieldMapping('uid', 'uid')->sourceMigration('userMigration');
     $this->addFieldMapping('timestamp', 'timestamp');
     $this->addFieldMapping('comment', 'comment');

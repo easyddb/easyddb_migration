@@ -34,15 +34,16 @@ class EasyDDBOpeningHoursMigration extends DynamicMigration {
     );
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
-      ->select('opening_hours', 'oh')
-      ->fields('oh');
+      ->select('opening_hours', 'oh');
+    $query->innerJoin('node', 'n', 'n.nid=oh.nid');
+    $query->fields('oh');
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
     $this->source = new MigrateSourceSQL($query, array(), NULL, $this->sourceOptions);
 
     // Set mapping for fields.
-    $this->addFieldMapping('nid', 'nid')->sourceMigration(array('libraryMigration'));
+    $this->addFieldMapping('nid', 'nid')->sourceMigration('libraryMigration');
     $this->addFieldMapping('date', 'date');
     $this->addFieldMapping('start_time', 'start_time');
     $this->addFieldMapping('end_time', 'end_time');
@@ -50,7 +51,7 @@ class EasyDDBOpeningHoursMigration extends DynamicMigration {
     $this->addFieldMapping('notice', 'notice');
     $this->addFieldMapping('repeat_rule', 'repeat_rule');
     $this->addFieldMapping('repeat_end_date', 'repeat_end_date');
-    $this->addFieldMapping('original_instance_id', 'original_instance_id')->sourceMigration(array('openingHoursMigration'));
+    $this->addFieldMapping('original_instance_id', 'original_instance_id')->sourceMigration('openingHoursMigration');
     $this->addFieldMapping('customised', 'customised');
   }
 }

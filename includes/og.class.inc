@@ -100,10 +100,10 @@ class EasyDDBOgMembershipMigration extends DynamicMigration {
     $this->addFieldMapping('etid', 'etid');
     $this->addFieldMapping('entity_type', 'entity_type');
     $this->addFieldMapping('gid', 'gid')->sourceMigration('libraryMigration');
-    $this->addFieldMapping('group_type', 'group_type');
+    $this->addFieldMapping('group_type', 'group_type')->defaultValue('node');;
     $this->addFieldMapping('state', 'state');
     $this->addFieldMapping('created', 'created');
-    $this->addFieldMapping('field_name', 'field_name');
+    $this->addFieldMapping('field_name', 'field_name')->defaultValue('og_group_ref');
     $this->addFieldMapping('language', 'language');
   }
 
