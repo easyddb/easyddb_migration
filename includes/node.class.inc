@@ -383,3 +383,123 @@ class EasyDDBCampaignMigration extends DrupalNode7Migration {
     $this->removeFieldMapping('body:format');
   }
 }
+
+/**
+ * Defines migrating of ding campaign table.
+ */
+class EasyDDBCampaignTableMigration extends DynamicMigration {
+
+  public function __construct($arguments) {
+    // Set default group.
+    $group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
+    parent::__construct($group);
+
+    $this->dependencies[] ='campaignMigration';
+
+    // Set table name of source data.
+    $table_name = 'ding_campaign';
+
+    // Set machine name conform to migrate_d2d mechanism.
+    $this->machineName = $arguments['machine_name'];
+
+    // Set destination of migrating, in this case it is table.
+    $this->destination = new MigrateDestinationTable($table_name);
+
+    // Set definition of field for mapping. It should be a field which indicates each record in table.
+    $this->map = new MigrateSQLMap(
+      $this->machineName,
+        array(
+          'id' => array(
+            'type' => 'int',
+            'not null' => 1,
+            'unsigned' => 1,
+            'alias' => 'o',
+          ),
+        ),
+        MigrateDestinationTable::getKeySchema($table_name) // Gets primary key of destination table.
+      );
+    // Define query for getting source data.
+    $query =  Database::getConnection('default', 'migration')
+              ->select('ding_campaign', 'o')
+              ->fields('o');
+
+    // Set query for getting source data.
+    $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
+    $this->source = new MigrateSourceSQL($query, array(), NULL, $this->sourceOptions);
+
+    // Set mapping for fields.
+    $this->addFieldMapping('cid', 'cid')->sourceMigration('campaignMigration');
+    $this->addFieldMapping('type', 'type');
+    $this->addFieldMapping('weight', 'weight');
+  }
+}
+
+/**
+ * Defines migrating of ding campaign rules.
+ */
+class EasyDDBCampaignRulesMigration extends DynamicMigration {
+
+  public function __construct($arguments) {
+    // Set default group.
+    $group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
+    parent::__construct($group);
+
+    $this->dependencies[] ='campaignMigration';
+
+    // Set table name of source data.
+    $table_name = 'ding_campaign_rules';
+
+    // Set machine name conform to migrate_d2d mechanism.
+    $this->machineName = $arguments['machine_name'];
+
+    // Set destination of migrating, in this case it is table.
+    $this->destination = new MigrateDestinationTable($table_name);
+
+    // Set definition of field for mapping. It should be a field which indicates each record in table.
+    $this->map = new MigrateSQLMap(
+      $this->machineName,
+        array(
+          'id' => array(
+            'type' => 'int',
+            'not null' => 1,
+            'unsigned' => 1,
+            'alias' => 'o',
+          ),
+        ),
+        MigrateDestinationTable::getKeySchema($table_name) // Gets primary key of destination table.
+      );
+    // Define query for getting source data.
+    $query =  Database::getConnection('default', 'migration')
+              ->select('ding_campaign_rules', 'o')
+              ->fields('o');
+
+    // Set query for getting source data.
+    $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
+    $this->source = new MigrateSourceSQL($query, array(), NULL, $this->sourceOptions);
+
+    // Set mapping for fields.
+    $this->addFieldMapping('nid', 'nid');
+    $this->addFieldMapping('cid', 'cid')->sourceMigration('campaignMigration');
+    $this->addFieldMapping('rule', 'rule');
+    $this->addFieldMapping('type', 'type');
+  }
+
+ public function prepare($e, $r) {
+    // Array of all related migration.
+    $sources = array(
+        'newsMigration',
+        'eventsMigration',
+        'libraryMigration',
+        'pageMigration',
+        'campaignMigration',
+    );
+    if ($row->nid != NULL) {
+      $source_migration = Migration::getInstance($sources);
+      $source_migration->sourceKeyMap['nid'] = 'nid';
+      $destid = $source_migration->getMap()->lookupDestinationID(array($r->nid));
+      if (!empty($destid)) {
+        $e->nid = $destid;
+      }
+    }
+  }
+}
