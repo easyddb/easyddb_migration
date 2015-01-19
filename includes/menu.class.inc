@@ -75,7 +75,7 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
     $query = Database::getConnection('default', $this->sourceConnection)
              ->select('menu_links', 'm')
              ->fields('m')
-             ->condition('m.menu_name', array('user-menu', 'menu-secondary-menu'), 'NOT IN')
+             ->condition('m.menu_name', array('user-menu', 'menu-secondary-menu', 'management'), 'NOT IN')
              ->condition('m.mlid', 2, '>');
     return $query;
   }
@@ -93,6 +93,7 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
     // NIDs first
     if (!empty($this->node_migrations)) {
       $regex_nid = "/(?<=node\/)[\d]+(?=$|\/)/";
+      $regex_tid = "/(?<=taxonomy\/term\/)[\d]+(?=$|\/)/";
 
       if (preg_match($regex_nid, $row->link_path, $matches)) {
         if ($value = $this->handleSourceMigration($this->node_migrations, $matches[0])) {
@@ -104,6 +105,16 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
           }
         }
         else {
+        }
+      }
+      elseif (preg_match($regex_tid, $row->link_path, $matches)) {
+        if ($value = $this->handleSourceMigration($this->term_migrations, $matches[0])) {
+          $new_path = preg_replace('/' . $matches[0] . '/', $value, $row->link_path);
+          if ($new_path) {
+            $row->link_path = $new_path;
+          }
+          else {
+          }
         }
       }
     }
