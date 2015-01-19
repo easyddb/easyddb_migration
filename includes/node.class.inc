@@ -420,8 +420,9 @@ class EasyDDBCampaignTableMigration extends DynamicMigration {
       );
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
-              ->select('ding_campaign', 'o')
-              ->fields('o');
+              ->select('ding_campaign', 'o');
+    $query->innerJoin('node', 'n', 'n.nid=o.cid');
+    $query->fields('o');
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
@@ -444,6 +445,10 @@ class EasyDDBCampaignRulesMigration extends DynamicMigration {
     $group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
     parent::__construct($group);
 
+    $this->dependencies[] ='newsMigration';
+    $this->dependencies[] ='eventsMigration';
+    $this->dependencies[] ='libraryMigration';
+    $this->dependencies[] ='pageMigration';
     $this->dependencies[] ='campaignMigration';
 
     // Set table name of source data.
@@ -470,8 +475,9 @@ class EasyDDBCampaignRulesMigration extends DynamicMigration {
       );
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
-              ->select('ding_campaign_rules', 'o')
-              ->fields('o');
+              ->select('ding_campaign_rules', 'o');
+    $query->innerJoin('node', 'n', 'n.nid=o.cid');
+    $query->fields('o');
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
@@ -493,12 +499,16 @@ class EasyDDBCampaignRulesMigration extends DynamicMigration {
         'pageMigration',
         'campaignMigration',
     );
-    if ($row->nid != NULL) {
-      $source_migration = Migration::getInstance($sources);
-      $source_migration->sourceKeyMap['nid'] = 'nid';
-      $destid = $source_migration->getMap()->lookupDestinationID(array($r->nid));
-      if (!empty($destid)) {
-        $e->nid = $destid;
+    if ($r->nid != NULL) {
+      foreach ($sources as $sources) {
+        $source_migration = Migration::getInstance($sources);
+        $source_migration->sourceKeyMap['nid'] = 'nid';
+        $destid = $source_migration->getMap()->lookupDestinationID(array($r->nid));
+        if (!empty($destid)) {
+          $destid = current($destid);
+          $e->nid = $destid;
+          $e->rule = "[nid:{$destid}]";
+        }
       }
     }
   }
