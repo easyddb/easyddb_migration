@@ -5,6 +5,7 @@ core = 7.x
 
 dependencies[] = migrate
 dependencies[] = migrate_d2d
+dependencies[] = migrate_extras
 
 files[] = includes/user.class.inc
 files[] = includes/taxonomy.class.inc

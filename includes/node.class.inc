@@ -86,6 +86,8 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
+    MigrateDestinationMedia::rewriteImgTags($entity, 'field_ding_news_body');
+    $entity->field_ding_news_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_news_body['und'][0]['value']);
     $ed_nodes = variable_get('editorial_base_content_types');
     $node_ed = !empty($ed_nodes['ding_news']);
     $node_ed_status = $row->edns_status;
@@ -107,6 +109,19 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
         $entity->field_editorial_status[LANGUAGE_NONE][0]['value'] = $ed_status_mapping[$editorial_status];
       }
     }
+  }
+
+  public static function replaceBody($body) {
+    $pattern = '/(.+)"fid":"(\d+)"(.+)/';
+    return preg_replace_callback($pattern,
+      function($matches) {
+        $source_migration = Migration::getInstance('fileMigration');
+        $source_migration->sourceKeyMap['fid'] = 'fid';
+        $destid = $source_migration->getMap()->lookupDestinationID(array($matches[2]));
+        $fid = !empty($destid) ? current($destid) : $matches[2];
+        return "{$matches[1]}\"fid\":\"{$fid}\"{$matches[3]}";
+      },
+      $body);
   }
 }
 
@@ -202,7 +217,8 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-
+    MigrateDestinationMedia::rewriteImgTags($entity, 'field_ding_event_body');
+    $entity->field_ding_event_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_event_body['und'][0]['value']);
     if (isset($row->field_event_date[0]) && !empty($row->field_event_date[0])) {
       $entity->field_ding_event_date['und'][0]['value'] = $row->field_event_date[0];
       $entity->field_ding_event_date['und'][0]['timezone'] = "Europe/Copenhagen";
@@ -303,6 +319,11 @@ class EasyDDBLibraryMigration extends DrupalNode7Migration {
     $this->removeFieldMapping('body:summary');
     $this->removeFieldMapping('body:format');
   }
+
+  public function prepare($entity, $row) {
+    MigrateDestinationMedia::rewriteImgTags($entity, 'field_ding_library_body');
+    $entity->field_ding_library_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_library_body['und'][0]['value']);
+  }
 }
 
 /**
@@ -343,6 +364,11 @@ class EasyDDBPageMigration extends DrupalNode7Migration {
     $this->removeFieldMapping('body:summary');
     $this->removeFieldMapping('body:format');
   }
+
+  public function prepare($entity, $row) {
+    MigrateDestinationMedia::rewriteImgTags($entity, 'field_ding_page_body');
+    $entity->field_ding_page_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_page_body['und'][0]['value']);
+  }
 }
 
 /**
@@ -381,6 +407,11 @@ class EasyDDBCampaignMigration extends DrupalNode7Migration {
     $this->removeFieldMapping('body:language');
     $this->removeFieldMapping('body:summary');
     $this->removeFieldMapping('body:format');
+  }
+
+  public function prepare($entity, $row) {
+    MigrateDestinationMedia::rewriteImgTags($entity, 'field_camp_text_full');
+    $entity->field_camp_text_full['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_camp_text_full['und'][0]['value']);
   }
 }
 
@@ -475,9 +506,10 @@ class EasyDDBCampaignRulesMigration extends DynamicMigration {
       );
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
-              ->select('ding_campaign_rules', 'o');
-    $query->innerJoin('node', 'n', 'n.nid=o.cid');
-    $query->fields('o');
+              ->select('ding_campaign_rules', 'r');
+    $query->innerJoin('node', 'n', 'n.nid=r.cid');
+    $query->fields('r');
+    $query->where('r.nid in (select nid from node) or r.nid is null');
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
@@ -492,22 +524,31 @@ class EasyDDBCampaignRulesMigration extends DynamicMigration {
 
  public function prepare($e, $r) {
     // Array of all related migration.
-    $sources = array(
+   $sources = array(
+      'rule_taxonomy' => array(
+        'newsCategoryMigration',
+        'eventCategoryMigration',
+        'tagsMigration',
+        'sectionMigration'
+      ),
+      'rule_page' => array(
         'newsMigration',
         'eventsMigration',
         'libraryMigration',
         'pageMigration',
         'campaignMigration',
+      ),
     );
     if ($r->nid != NULL) {
-      foreach ($sources as $sources) {
+      foreach ($sources[$r->type] as $sources) {
         $source_migration = Migration::getInstance($sources);
         $source_migration->sourceKeyMap['nid'] = 'nid';
         $destid = $source_migration->getMap()->lookupDestinationID(array($r->nid));
         if (!empty($destid)) {
           $destid = current($destid);
           $e->nid = $destid;
-          $e->rule = "[nid:{$destid}]";
+
+          $e->rule = $r->type == 'rule_page' ? "[nid:{$destid}]" : "[tid:{$destid}]";
         }
       }
     }
