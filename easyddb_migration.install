@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * Automaticly creates OG and adds editorial users to these groups.
+ */
+function easyddb_migration_update_7001(&$sandbox) {
+  $ids = db_query("select ur.uid from role r join users_roles ur on r.rid=ur.rid where r.name in (:roles)",
+    array(
+      ':roles' => array(
+        'administrators',
+        'editor',
+        'local administrator',
+        'journalist',
+      )
+    )
+  )->fetchAllKeyed(0, 0);
+  $users = user_load_multiple($ids);
+
+  $voc = taxonomy_vocabulary_machine_name_load('editorial_base');
+  $terms = taxonomy_get_tree($voc->vid);
+
+  foreach ($terms as $key => $term) {
+
+    $node = new stdClass();
+
+    $node->type = "editorial_base";
+    $node->name = 'admin';
+    $node->uid = 1;
+    $node->title = t("{$term->name} OG");
+    $node->body = "";
+    $node->status = 1;
+    $node->promote = 0;
+    $node->comment = 1;
+    $node->language = 'da';
+
+    $node->og_description = t("OG Description");
+    $node->og_register = 0;
+    $node->og_directory = 0;
+    $node->og_private = 1;
+    $node->og_selective = 3;
+
+    $node = node_submit($node);
+    node_save($node);
+
+    foreach ($users as $key => $user) {
+      og_group('node', $node->nid, array(
+        "entity_type" => "user",
+        "entity" => $user,
+        "membership type" => OG_MEMBERSHIP_TYPE_DEFAULT,
+      ));
+    }
+
+    $t = taxonomy_term_load($term->tid);
+    og_group('node', $node->nid, array(
+      "entity_type" => "taxonomy_term",
+      "field_name" => 'og_group_ref_eb',
+      "entity" => $t,
+      "membership type" => OG_MEMBERSHIP_TYPE_DEFAULT,
+    ));
+  }
+}
