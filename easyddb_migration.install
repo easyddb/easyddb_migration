@@ -60,3 +60,10 @@ function easyddb_migration_update_7001(&$sandbox) {
     ));
   }
 }
+
+/**
+ * Implements hook_update_N().
+ */
+function easyddb_migration_update_7002(&$sandbox) {
+  entity_get_controller('node')->resetCache();
+}
