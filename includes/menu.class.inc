@@ -25,7 +25,7 @@ class EasyDDBMenuMigration extends DrupalMenuMigration {
     $query = Database::getConnection('default', $this->sourceConnection)
              ->select('menu_custom', 'm')
              ->fields('m')
-             ->condition('m.menu_name', array('user-menu', 'menu-secondary-menu'), 'NOT IN');
+             ->condition('m.menu_name', array('user-menu', 'navigation', 'management'), 'NOT IN');
     return $query;
   }
 }
@@ -75,7 +75,7 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
     $query = Database::getConnection('default', $this->sourceConnection)
              ->select('menu_links', 'm')
              ->fields('m')
-             ->condition('m.menu_name', array('user-menu', 'menu-secondary-menu', 'management'), 'NOT IN')
+             ->condition('m.menu_name', array('user-menu', 'navigation', 'management'), 'NOT IN')
              ->condition('m.mlid', 2, '>');
     return $query;
   }
