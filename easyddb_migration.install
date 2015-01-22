@@ -9,8 +9,9 @@ function easyddb_migration_update_7001(&$sandbox) {
       ':roles' => array(
         'administrators',
         'editor',
+        'guest blogger',
         'local administrator',
-        'journalist',
+        'local editor',
       )
     )
   )->fetchAllKeyed(0, 0);
