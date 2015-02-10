@@ -112,16 +112,37 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
   }
 
   public static function replaceBody($body) {
-    $pattern = '/(.+)"fid":"(\d+)"(.+)/';
-    return preg_replace_callback($pattern,
+    $patterns = array(
+      '/"view_mode":"(\w+)"/',
+      '/"fid":"(\d+)"/',
+    );
+    return preg_replace_callback($patterns,
       function($matches) {
-        $source_migration = Migration::getInstance('fileMigration');
-        $source_migration->sourceKeyMap['fid'] = 'fid';
-        $destid = $source_migration->getMap()->lookupDestinationID(array($matches[2]));
-        $fid = !empty($destid) ? current($destid) : $matches[2];
-        return "{$matches[1]}\"fid\":\"{$fid}\"{$matches[3]}";
+        if (strstr($matches[0], 'view_mode')) {
+          $maps = array(
+            'ding_dams_download_link' => 'default',
+            'media_link' => 'default',
+            'wysiwig' => 'default',
+            'media_original' => 'default',
+            'teaser' => 'teaser',
+            'preview' => 'preview',
+            'default' => 'default',
+            'ding_dams_inline' => 'easyddb_dams_media_browser_inline',
+            'ding_dams_popup' => 'easyddb_dams_media_browser_popup',
+            'ding_dams_download_icon' => 'easyddb_dams_media_browser_download_icon',
+            'ding_dams_download_link' => 'easyddb_dams_media_browser_download_link',
+          );
+          return "\"view_mode\":\"{$maps[$matches[1]]}\"";
+        }
+        else {
+          $source_migration = Migration::getInstance('fileMigration');
+          $source_migration->sourceKeyMap['fid'] = 'fid';
+          $destid = $source_migration->getMap()->lookupDestinationID(array($matches[1]));
+          $fid = !empty($destid) ? current($destid) : $matches[1];
+          return "\"fid\":\"{$fid}\"";
+        }
       },
-      $body);
+    $body);
   }
 }
 
@@ -212,12 +233,12 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
     $query = parent::query();
     $query->join('editorial_dashboard_node_status', 'edns', 'n.nid = edns.nid');
     $query->fields('edns', array('status'));
+    $query->condition('n.nid', 460);
 
     return $query;
   }
 
   public function prepare($entity, $row) {
-    MigrateDestinationMedia::rewriteImgTags($entity, 'field_ding_event_body');
     $entity->field_ding_event_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_event_body['und'][0]['value']);
     if (isset($row->field_event_date[0]) && !empty($row->field_event_date[0])) {
       $entity->field_ding_event_date['und'][0]['value'] = $row->field_event_date[0];
