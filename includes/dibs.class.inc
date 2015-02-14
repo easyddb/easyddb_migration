@@ -3,7 +3,7 @@
 /**
  * Defines migrating of dibs settings.
  */
-class EasyDDBDibsSettingsMigration extends DynamicMigration {
+class EasyDDBDibsSettingsMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -70,7 +70,7 @@ class EasyDDBDibsSettingsMigration extends DynamicMigration {
 /**
  * Defines migrating of dibs transactions.
  */
-class EasyDDBDibsTransactionsMigration extends DynamicMigration {
+class EasyDDBDibsTransactionsMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -147,7 +147,7 @@ class EasyDDBDibsTransactionsMigration extends DynamicMigration {
 /**
  * Defines migrating of dibs transactions log.
  */
-class EasyDDBDibsTransactionsLogMigration extends DynamicMigration {
+class EasyDDBDibsTransactionsLogMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -205,7 +205,7 @@ class EasyDDBDibsTransactionsLogMigration extends DynamicMigration {
 /**
  * Defines migrating of dibs split payments.
  */
-class EasyDDBDibsSplitPaymentsMigration extends DynamicMigration {
+class EasyDDBDibsSplitPaymentsMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.

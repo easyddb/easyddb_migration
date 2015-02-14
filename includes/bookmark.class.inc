@@ -3,7 +3,7 @@
 /**
  * Defines migrating of bookmark.
  */
-class EasyDDBBookmarkMigration extends DynamicMigration {
+class EasyDDBBookmarkMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -42,7 +42,6 @@ class EasyDDBBookmarkMigration extends DynamicMigration {
     $this->source = new MigrateSourceSQL($query, array(), NULL, $this->sourceOptions);
 
     // Set mapping for fields.
-    $this->addFieldMapping('fid', 'fid');
     $this->addFieldMapping('content_type', 'content_type');
     $this->addFieldMapping('name', 'name');
     $this->addFieldMapping('title', 'title');
@@ -54,7 +53,7 @@ class EasyDDBBookmarkMigration extends DynamicMigration {
 /**
  * Defines migrating of bookmark types.
  */
-class EasyDDBBookmarkTypesMigration extends DynamicMigration {
+class EasyDDBBookmarkTypesMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -108,7 +107,7 @@ class EasyDDBBookmarkTypesMigration extends DynamicMigration {
 /**
  * Defines migrating of bookmark counts.
  */
-class EasyDDBBookmarkCountsMigration extends DynamicMigration {
+class EasyDDBBookmarkCountsMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -158,7 +157,7 @@ class EasyDDBBookmarkCountsMigration extends DynamicMigration {
 /**
  * Defines migrating of bookmark content.
  */
-class EasyDDBBookmarkContentMigration extends DynamicMigration {
+class EasyDDBBookmarkContentMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.

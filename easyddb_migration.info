@@ -18,3 +18,4 @@ files[] = includes/menu.class.inc
 files[] = includes/dibs.class.inc
 files[] = includes/dashboard_comments.class.inc
 files[] = includes/opening_hours.class.inc
+files[] = includes/webform.class.inc

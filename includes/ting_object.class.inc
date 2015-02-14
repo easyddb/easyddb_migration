@@ -3,7 +3,7 @@
 /**
  * Defines migrating of ting object.
  */
-class EasyDDBTingObjectMigration extends DynamicMigration {
+class EasyDDBTingObjectMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -51,7 +51,7 @@ class EasyDDBTingObjectMigration extends DynamicMigration {
 /**
  * Defines migrating of ting_object_revision.
  */
-class EasyDDBTingObjectRevisionMigration extends DynamicMigration {
+class EasyDDBTingObjectRevisionMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.

@@ -3,7 +3,7 @@
 /**
  * Defines migrating of .
  */
-class EasyDDBOgMembershipTypeMigration extends DynamicMigration {
+class EasyDDBOgMembershipTypeMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -54,7 +54,7 @@ class EasyDDBOgMembershipTypeMigration extends DynamicMigration {
 /**
  * Defines migrating of .
  */
-class EasyDDBOgMembershipMigration extends DynamicMigration {
+class EasyDDBOgMembershipMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -137,7 +137,7 @@ class EasyDDBOgMembershipMigration extends DynamicMigration {
 /**
  * Defines migrating of .
  */
-class EasyDDBOgMenuMigration extends DynamicMigration {
+class EasyDDBOgMenuMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -185,7 +185,7 @@ class EasyDDBOgMenuMigration extends DynamicMigration {
 /**
  * Defines migrating of .
  */
-class EasyDDBOgRoleMigration extends DynamicMigration {
+class EasyDDBOgRoleMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -235,7 +235,7 @@ class EasyDDBOgRoleMigration extends DynamicMigration {
 /**
  * Defines migrating of .
  */
-class EasyDDBOgRolePermissionMigration extends DynamicMigration {
+class EasyDDBOgRolePermissionMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -285,7 +285,7 @@ class EasyDDBOgRolePermissionMigration extends DynamicMigration {
 /**
  * Defines migrating of .
  */
-class EasyDDBOgUsersRolesMigration extends DynamicMigration {
+class EasyDDBOgUsersRolesMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
