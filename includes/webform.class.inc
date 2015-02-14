@@ -88,14 +88,6 @@ class EasyDDBWebFormMigration extends Migration {
     $this->addFieldMapping('preview_excluded_components', 'preview_excluded_components');
 
   }
-
-  // public function prepareRow($r) {
-  //   if (parent::prepareRow($r) === FALSE) {
-  //     return FALSE;
-  //   }
-
-  //   $r->confirmation = empty($r->confirmation) ? "submit" : $r->confirmation;
-  // }
 }
 
 /**

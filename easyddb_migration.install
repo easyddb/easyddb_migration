@@ -62,8 +62,55 @@ function easyddb_migration_update_7001(&$sandbox) {
 }
 
 /**
- * Implements hook_update_N().
+ * Reset caches of nodes.
  */
 function easyddb_migration_update_7002(&$sandbox) {
   entity_get_controller('node')->resetCache();
+}
+
+/**
+ * Updates nids in links inside the body of nodes.
+ */
+function easyddb_migration_update_7003(&$sandbox) {
+  $patterns = array(
+    '/node\/(\d+)/',
+  );
+
+  $maps = array(
+    'ding_news' => 'field_ding_news_body',
+    'ding_event' => 'field_ding_event_body',
+    'ding_library' => 'field_ding_library_body',
+    'ding_page' => 'field_ding_page_body',
+    'ding_campaign' => 'field_camp_text_full',
+  );
+  $callback = function($matches) {
+    // Array of all related migration.
+    $sources = array(
+      'newsMigration',
+      'eventsMigration',
+      'libraryMigration',
+      'pageMigration',
+      'campaignMigration',
+    );
+    foreach ($sources as $source) {
+      $source_migration = Migration::getInstance($source);
+      $source_migration->sourceKeyMap['nid'] = 'nid';
+      $destid = $source_migration->getMap()->lookupDestinationID(array($matches[1]));
+      $nid = $matches[1];
+      if (!empty($destid)) {
+        $nid = current($destid);
+        break;
+      }
+    }
+    return "node/{$nid}";
+  };
+  $nodes = entity_load('node');
+  foreach ($nodes as $node) {
+    if (!empty($node->{$maps[$node->type]}[LANGUAGE_NONE][0])) {
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value'] = preg_replace_callback($patterns, $callback, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value']);
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value'] = preg_replace_callback($patterns, $callback, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value']);
+
+      node_save($node);
+    }
+  }
 }

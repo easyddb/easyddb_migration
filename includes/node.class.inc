@@ -86,7 +86,7 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-    $entity->field_ding_news_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_news_body['und'][0]['value']);
+    $entity->field_ding_news_body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_news_body['und'][0]['value']);
     $ed_nodes = variable_get('editorial_base_content_types');
     $node_ed = !empty($ed_nodes['ding_news']);
     $node_ed_status = $row->edns_status;
@@ -110,10 +110,11 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     }
   }
 
-  public static function replaceBody($body) {
+  public static function setActualData($body) {
     $patterns = array(
       '/"view_mode":"(\w+)"/',
       '/"fid":"(\d+)"/',
+      '/node\/(\d+)/',
     );
     return preg_replace_callback($patterns,
       function($matches) {
@@ -232,13 +233,12 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
     $query = parent::query();
     $query->join('editorial_dashboard_node_status', 'edns', 'n.nid = edns.nid');
     $query->fields('edns', array('status'));
-    $query->condition('n.nid', 460);
 
     return $query;
   }
 
   public function prepare($entity, $row) {
-    $entity->field_ding_event_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_event_body['und'][0]['value']);
+    $entity->field_ding_event_body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_event_body['und'][0]['value']);
     if (isset($row->field_event_date[0]) && !empty($row->field_event_date[0])) {
       $entity->field_ding_event_date['und'][0]['value'] = $row->field_event_date[0];
       $entity->field_ding_event_date['und'][0]['timezone'] = "Europe/Copenhagen";
@@ -341,7 +341,7 @@ class EasyDDBLibraryMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-    $entity->field_ding_library_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_library_body['und'][0]['value']);
+    $entity->field_ding_library_body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_library_body['und'][0]['value']);
   }
 }
 
@@ -385,7 +385,7 @@ class EasyDDBPageMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-    $entity->field_ding_page_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_page_body['und'][0]['value']);
+    $entity->field_ding_page_body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_page_body['und'][0]['value']);
   }
 }
 
@@ -428,7 +428,7 @@ class EasyDDBCampaignMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-    $entity->field_camp_text_full['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_camp_text_full['und'][0]['value']);
+    $entity->field_camp_text_full['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_camp_text_full['und'][0]['value']);
   }
 }
 
