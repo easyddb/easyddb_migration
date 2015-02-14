@@ -1,6 +1,6 @@
 <?php
 
-class EasyDDBEditorialDashboardCommentsMigration extends DynamicMigration {
+class EasyDDBEditorialDashboardCommentsMigration extends Migration {
   public function __construct($arguments) {
     // Set default group.
     $group = MigrateGroup::getInstance('EasyDDBDashboardCommentsMigrationGroup');

@@ -3,7 +3,7 @@
 /**
  * Defines migrating of .
  */
-class EasyDDBOpeningHoursMigration extends DynamicMigration {
+class EasyDDBOpeningHoursMigration extends Migration {
 
    public function __construct($arguments) {
     // Set default group.

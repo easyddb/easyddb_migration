@@ -86,7 +86,6 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-    MigrateDestinationMedia::rewriteImgTags($entity, 'field_ding_news_body');
     $entity->field_ding_news_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_news_body['und'][0]['value']);
     $ed_nodes = variable_get('editorial_base_content_types');
     $node_ed = !empty($ed_nodes['ding_news']);
@@ -342,7 +341,6 @@ class EasyDDBLibraryMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-    MigrateDestinationMedia::rewriteImgTags($entity, 'field_ding_library_body');
     $entity->field_ding_library_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_library_body['und'][0]['value']);
   }
 }
@@ -387,7 +385,6 @@ class EasyDDBPageMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-    MigrateDestinationMedia::rewriteImgTags($entity, 'field_ding_page_body');
     $entity->field_ding_page_body['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_ding_page_body['und'][0]['value']);
   }
 }
@@ -431,7 +428,6 @@ class EasyDDBCampaignMigration extends DrupalNode7Migration {
   }
 
   public function prepare($entity, $row) {
-    MigrateDestinationMedia::rewriteImgTags($entity, 'field_camp_text_full');
     $entity->field_camp_text_full['und'][0]['value'] = EasyDDBNewsMigration::replaceBody($entity->field_camp_text_full['und'][0]['value']);
   }
 }
@@ -439,7 +435,7 @@ class EasyDDBCampaignMigration extends DrupalNode7Migration {
 /**
  * Defines migrating of ding campaign table.
  */
-class EasyDDBCampaignTableMigration extends DynamicMigration {
+class EasyDDBCampaignTableMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
@@ -490,7 +486,7 @@ class EasyDDBCampaignTableMigration extends DynamicMigration {
 /**
  * Defines migrating of ding campaign rules.
  */
-class EasyDDBCampaignRulesMigration extends DynamicMigration {
+class EasyDDBCampaignRulesMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.

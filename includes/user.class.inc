@@ -35,7 +35,7 @@ class EasyDDBUserMigration extends DrupalUser7Migration {
 /**
  * Defines migrating of users tokens.
  */
-class EasyDDBUserTokenMigration extends DynamicMigration {
+class EasyDDBUserTokenMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.

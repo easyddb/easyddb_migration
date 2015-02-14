@@ -282,6 +282,61 @@ function easyddb_migration_flush_caches() {
     'description' => t('Migration of opening Hours.'),
   );
   Migration::registerMigration('EasyDDBOpeningHoursMigration', $arguments['machine_name'], $arguments);
+
+  // Webform migration group.
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormMigration',
+    'description' => t('Migration of webform table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormComponentMigration',
+    'description' => t('Migration of webform_component table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormComponentMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormConditionalMigration',
+    'description' => t('Migration of webform_conditional table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormConditionalMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormConditionalRulesMigration',
+    'description' => t('Migration of webform_conditional_rules table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormConditionalRulesMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormEmailsMigration',
+    'description' => t('Migration of webform_emails table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormEmailsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webForLastDownloadMigration',
+    'description' => t('Migration of webform_last_download table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormLastDownloadMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormRolesMigration',
+    'description' => t('Migration of webform_roles table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormRolesMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormSubmissionsMigration',
+    'description' => t('Migration of webform_submissions table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormSubmissionsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormSubmissionsDataMigration',
+    'description' => t('Migration of webform_submitted_data table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormSubmissionsDataMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
