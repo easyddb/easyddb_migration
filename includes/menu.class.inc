@@ -76,6 +76,9 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
              ->select('menu_links', 'm')
              ->fields('m')
              ->condition('m.menu_name', array('user-menu', 'navigation', 'management'), 'NOT IN')
+             ->condition('m.module', array('og_menu'), 'NOT IN')
+             ->condition('m.link_path', db_like('node/add') . '%', 'NOT LIKE')
+             ->condition('m.link_path', db_like('admin') . '%', 'NOT LIKE')
              ->condition('m.mlid', 2, '>');
     return $query;
   }
