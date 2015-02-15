@@ -75,10 +75,11 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
     $query = Database::getConnection('default', $this->sourceConnection)
              ->select('menu_links', 'm')
              ->fields('m')
-             ->condition('m.menu_name', array('user-menu', 'navigation', 'management'), 'NOT IN')
+             ->condition('m.menu_name', array('menu-footer-menu-1', 'menu-footer-menu-2', 'menu-footer-menu-3', 'menu-footer-menu-4',  'main-menu'), 'IN')
              ->condition('m.module', array('og_menu'), 'NOT IN')
              ->condition('m.link_path', db_like('node/add') . '%', 'NOT LIKE')
              ->condition('m.link_path', db_like('admin') . '%', 'NOT LIKE')
+             ->condition('m.link_path', db_like('file/add') . '%', 'NOT LIKE')
              ->condition('m.mlid', 2, '>');
     return $query;
   }
@@ -97,6 +98,7 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
     if (!empty($this->node_migrations)) {
       $regex_nid = "/(?<=node\/)[\d]+(?=$|\/)/";
       $regex_tid = "/(?<=taxonomy\/term\/)[\d]+(?=$|\/)/";
+      $regex_file = "/(http(?:s)?:\/\/)(.*)(\/sites\/default\/.*)/";
 
       if (preg_match($regex_nid, $row->link_path, $matches)) {
         if ($value = $this->handleSourceMigration($this->node_migrations, $matches[0])) {
@@ -118,6 +120,16 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
           }
           else {
           }
+        }
+      }
+      elseif (preg_match($regex_file, $row->link_path, $matches)) {
+        global $base_url;
+        $domain = explode("//", $base_url);
+        $new_path = preg_replace('/' . $matches[2] . '/', $domain[1], $row->link_path);
+        if ($new_path) {
+          $row->link_path = $new_path;
+        }
+        else {
         }
       }
     }
