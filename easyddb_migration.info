@@ -19,3 +19,5 @@ files[] = includes/dibs.class.inc
 files[] = includes/dashboard_comments.class.inc
 files[] = includes/opening_hours.class.inc
 files[] = includes/webform.class.inc
+files[] = includes/place2book.class.inc
+files[] = includes/relation.class.inc

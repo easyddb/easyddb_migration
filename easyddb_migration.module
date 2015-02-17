@@ -337,6 +337,44 @@ function easyddb_migration_flush_caches() {
     'description' => t('Migration of webform_submitted_data table.'),
   );
   Migration::registerMigration('EasyDDBWebFormSubmissionsDataMigration', $arguments['machine_name'], $arguments);
+
+  // Place2book migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of place2book'),
+    'machine_name' => 'place2BookMigration',
+  );
+  Migration::registerMigration('EasyDDBPlace2BookMigration', $arguments['machine_name'], $arguments);
+
+  // Relation migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of relation.'),
+    'machine_name' => 'relationMigration',
+  );
+  Migration::registerMigration('EasyDDBRelationMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of relation bundles.'),
+    'machine_name' => 'relationBundlesMigration',
+  );
+  Migration::registerMigration('EasyDDBRelationBundlesMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of relation revision.'),
+    'machine_name' => 'relationRevisionMigration',
+  );
+  Migration::registerMigration('EasyDDBRelationRevisionMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of relation type.'),
+    'machine_name' => 'relationTypeMigration',
+  );
+  Migration::registerMigration('EasyDDBRelationTypeMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of endpoints.'),
+    'machine_name' => 'endpointsMigration',
+  );
+  Migration::registerMigration('EasyDDBEndPointMigration', $arguments['machine_name'], $arguments);
 }
 
 /**
