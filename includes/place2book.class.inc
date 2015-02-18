@@ -37,13 +37,7 @@ class EasyDDBPlace2BookMigration extends Migration {
             'alias' => 'p',
           ),
         ),
-         array(
-           'nid' => array(
-            'type' => 'int',
-            'not null' => 1,
-            'unsigned' => 1,
-          ),
-        )
+        MigrateDestinationTable::getKeySchema($table_name) // Gets primary key of destination table.
       );
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
