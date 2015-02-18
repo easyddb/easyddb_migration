@@ -114,7 +114,6 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $patterns = array(
       '/"view_mode":"(\w+)"/',
       '/"fid":"(\d+)"/',
-      '/node\/(\d+)/',
     );
     return preg_replace_callback($patterns,
       function($matches) {
