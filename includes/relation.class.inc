@@ -253,6 +253,13 @@ class EasyDDBEndPointMigration extends Migration {
     $group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
     parent::__construct($group);
 
+    // Dependencies.
+    $this->dependencies[] = 'newsMigration';
+    $this->dependencies[] = 'eventsMigration';
+    $this->dependencies[] = 'libraryMigration';
+    $this->dependencies[] = 'pageMigration';
+    $this->dependencies[] = 'campaignMigration';
+
     // Set table name of source data.
     $table_name = 'field_data_endpoints';
 

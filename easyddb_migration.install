@@ -73,7 +73,8 @@ function easyddb_migration_update_7002(&$sandbox) {
  */
 function easyddb_migration_update_7003(&$sandbox) {
   $patterns = array(
-    '/node\/(\d+)/',
+    array('/node\/(\d+)/'),
+    array('/taxonomy\/term\/(\d+)/'),
   );
 
   $maps = array(
@@ -83,7 +84,7 @@ function easyddb_migration_update_7003(&$sandbox) {
     'ding_page' => 'field_ding_page_body',
     'ding_campaign' => 'field_camp_text_full',
   );
-  $callback = function($matches) {
+  $callback_node = function($matches) {
     // Array of all related migration.
     $sources = array(
       'newsMigration',
@@ -104,11 +105,36 @@ function easyddb_migration_update_7003(&$sandbox) {
     }
     return "node/{$nid}";
   };
+
+   $callback_term = function($matches) {
+    // Array of all related migration.
+    $sources = array(
+      'newsCategoryMigration',
+      'eventCategoryMigration',
+      'tagsMigration',
+      'sectionMigration',
+      'damsCategoryMigration'
+    );
+
+    foreach ($sources as $source) {
+      $source_migration = Migration::getInstance($source);
+      $source_migration->sourceKeyMap['tid'] = 'tid';
+      $destid = $source_migration->getMap()->lookupDestinationID(array($matches[1]));
+      $tid = $matches[1];
+      if (!empty($destid)) {
+        $tid = current($destid);
+        break;
+      }
+    }
+    return "taxonomy/term/{$tid}";
+  };
   $nodes = entity_load('node');
   foreach ($nodes as $node) {
     if (!empty($node->{$maps[$node->type]}[LANGUAGE_NONE][0])) {
-      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value'] = preg_replace_callback($patterns, $callback, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value']);
-      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value'] = preg_replace_callback($patterns, $callback, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value']);
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value'] = preg_replace_callback($patterns[0], $callback_node, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value']);
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value'] = preg_replace_callback($patterns[1], $callback_term, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value']);
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value'] = preg_replace_callback($patterns[0], $callback_node, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value']);
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value'] = preg_replace_callback($patterns[1], $callback_term, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value']);
 
       node_save($node);
     }

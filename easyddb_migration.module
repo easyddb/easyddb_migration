@@ -241,7 +241,7 @@ function easyddb_migration_flush_caches() {
     'description' => t('Migration of menu links'),
     'menu_migration' => 'menuMigration',
     'node_migrations' => array('newsMigration', 'eventsMigration', 'libraryMigration', 'pageMigration', 'campaignMigration'),
-    'term_migrations' => array('newsCategoryMigration', 'eventCategoryMigration', 'tagsMigration', 'sectionMigration'),
+    'term_migrations' => array('newsCategoryMigration', 'eventCategoryMigration', 'tagsMigration', 'sectionMigration', 'damsCategoryMigration'),
   );
   Migration::registerMigration('EasyDDBMenuLinksMigration',  $arguments['machine_name'], $arguments);
 
