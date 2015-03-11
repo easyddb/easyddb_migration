@@ -130,7 +130,7 @@ function easyddb_migration_update_7003(&$sandbox) {
   };
   $nodes = entity_load('node');
   foreach ($nodes as $node) {
-    if (!empty($node->{$maps[$node->type]}[LANGUAGE_NONE][0])) {
+    if (isset($node->type) && !empty($node->type) && isset($maps[$node->type]) && isset($node->{$maps[$node->type]}[LANGUAGE_NONE][0]) && !empty($node->{$maps[$node->type]}[LANGUAGE_NONE][0])) {
       $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value'] = preg_replace_callback($patterns[0], $callback_node, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value']);
       $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value'] = preg_replace_callback($patterns[1], $callback_term, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value']);
       $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value'] = preg_replace_callback($patterns[0], $callback_node, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value']);
