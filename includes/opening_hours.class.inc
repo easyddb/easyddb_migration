@@ -37,6 +37,7 @@ class EasyDDBOpeningHoursMigration extends Migration {
       ->select('opening_hours', 'oh');
     $query->innerJoin('node', 'n', 'n.nid=oh.nid');
     $query->fields('oh');
+    $query->condition('n.type', 'ding_library');
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
