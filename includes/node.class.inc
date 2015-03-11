@@ -81,6 +81,8 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $query = parent::query();
     $query->leftJoin('editorial_dashboard_node_status', 'edns', 'n.nid = edns.nid');
     $query->fields('edns', array('status'));
+    $query->orderBy('edns.changed');
+    $query->groupBy('n.nid');
 
     return $query;
   }
@@ -261,6 +263,8 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
     $query = parent::query();
     $query->leftJoin('editorial_dashboard_node_status', 'edns', 'n.nid = edns.nid');
     $query->fields('edns', array('status'));
+    $query->orderBy('edns.changed');
+    $query->groupBy('n.nid');
 
     return $query;
   }
