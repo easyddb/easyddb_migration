@@ -6,6 +6,10 @@ class EasyDDBEditorialDashboardCommentsMigration extends Migration {
     $group = MigrateGroup::getInstance('EasyDDBDashboardCommentsMigrationGroup');
     parent::__construct($group);
 
+    // Dependencies.
+    $this->dependencies[] = 'newsMigration';
+    $this->dependencies[] = 'eventsMigration';
+
     // Set table name of source data.
     $table_name = 'editorial_dashboard_comments';
 
@@ -30,8 +34,9 @@ class EasyDDBEditorialDashboardCommentsMigration extends Migration {
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
       ->select('dashboard_comments', 'dc');
-    $query->innerJoin('node', 'n', 'n.nid=dc.nid');
-    $query->fields('dc', array('cid', 'nid', 'uid', 'timestamp', 'comment'));
+    $query->leftJoin('node', 'n', 'n.nid=dc.nid');
+    $query->condition('n.type', array('ding_event', 'ding_news'), 'IN');
+    $query->fields('dc');
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
@@ -39,7 +44,7 @@ class EasyDDBEditorialDashboardCommentsMigration extends Migration {
 
     // Set mapping for fields.
     $this->addFieldMapping('cid', 'cid');
-    $this->addFieldMapping('nid', 'nid')->sourceMigration(array('eventsMigration', 'newsMigration', 'pageMigration', 'campaignMigration', 'libraryMigration'));
+    $this->addFieldMapping('nid', 'nid')->sourceMigration(array('newsMigration', 'eventsMigration'));
     $this->addFieldMapping('uid', 'uid')->sourceMigration('userMigration');
     $this->addFieldMapping('timestamp', 'timestamp');
     $this->addFieldMapping('comment', 'comment');
