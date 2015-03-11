@@ -41,8 +41,9 @@ class EasyDDBPlace2BookMigration extends Migration {
       );
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
-              ->select('ding_place2book', 'p')
-              ->fields('p');
+      ->select('ding_place2book', 'p');
+    $query->innerJoin('node', 'n', 'n.nid=p.nid');
+    $query->fields('p');
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
