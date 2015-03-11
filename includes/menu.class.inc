@@ -80,6 +80,9 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
              ->condition('m.link_path', db_like('node/add') . '%', 'NOT LIKE')
              ->condition('m.link_path', db_like('admin') . '%', 'NOT LIKE')
              ->condition('m.link_path', db_like('file/add') . '%', 'NOT LIKE')
+             ->condition('m.link_path', '%' . db_like('biblioteker') . '%', 'NOT LIKE')
+             ->condition('m.link_path', '%' . db_like('arrangementer') . '%', 'NOT LIKE')
+             ->condition('m.link_path', '%' . db_like('front') . '%', 'NOT LIKE')
              ->condition('m.mlid', 2, '>');
     return $query;
   }
@@ -101,6 +104,15 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
       $regex_file = "/(http(?:s)?:\/\/)(.*)(\/sites\/default\/.*)/";
 
       if (preg_match($regex_nid, $row->link_path, $matches)) {
+       $query =  Database::getConnection('default', 'migration')
+          ->select('node', 'n')
+          ->fields('n', array('nid'))
+          ->condition('n.nid', $matches[0])
+          ->execute();
+        if ($query->rowCount() == 0) {
+          return FALSE;
+        }
+
         if ($value = $this->handleSourceMigration($this->node_migrations, $matches[0])) {
           $new_path = preg_replace('/' . $matches[0] . '/', $value, $row->link_path);
           if ($new_path) {
@@ -113,6 +125,15 @@ class EasyDDBMenuLinksMigration extends DrupalMenuLinksMigration {
         }
       }
       elseif (preg_match($regex_tid, $row->link_path, $matches)) {
+        $query =  Database::getConnection('default', 'migration')
+          ->select('taxonomy_term_data', 'd')
+          ->fields('d', array('tid'))
+          ->condition('d.tid', $matches[0])
+          ->execute();
+        if ($query->rowCount() == 0) {
+          return FALSE;
+        }
+
         if ($value = $this->handleSourceMigration($this->term_migrations, $matches[0])) {
           $new_path = preg_replace('/' . $matches[0] . '/', $value, $row->link_path);
           if ($new_path) {
