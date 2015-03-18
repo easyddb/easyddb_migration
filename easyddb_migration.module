@@ -1,0 +1,394 @@
+<?php
+
+/**
+ * Registering migrate classes.
+ */
+function easyddb_migration_flush_caches() {
+  $common_arguments = array(
+    'source_connection' => 'migration',
+    'source_version' => 7,
+  );
+
+  // User migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of roles from easyting'),
+    'machine_name' => 'roleMigration',
+    'role_mappings' => array(
+      "administrator" => "administrators",
+      "local administrator" => "local administrator",
+      "editor" => "editor",
+      "journalist" => "guest blogger",
+    ),
+  );
+  Migration::registerMigration('EasyDDBRoleMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of users from easyting'),
+    'machine_name' => 'userMigration',
+    'role_migration' => 'roleMigration',
+  );
+  Migration::registerMigration('EasyDDBUserMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of users token from easyting'),
+    'machine_name' => 'userTokenMigration',
+  );
+  Migration::registerMigration('EasyDDBUserTokenMigration', $arguments['machine_name'], $arguments);
+
+  // Taxonomy migration group.
+  $arguments = $common_arguments + array(
+    'description'            => t('Migration of taxonomy News Category'),
+    'machine_name'           => 'newsCategoryMigration',
+    'source_vocabulary'      => 'category',
+    'destination_vocabulary' => 'news_category',
+    'vocabulary_name'        => t('News category'),
+    'vocabulary_description' => t('News categories vocabulary.'),
+  );
+  Migration::registerMigration('EasyDDBTaxonomyMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description'            => t('Migration of taxonomy Event Category'),
+    'machine_name'           => 'eventCategoryMigration',
+    'source_vocabulary'      => 'category',
+    'destination_vocabulary' => 'event_category',
+    'vocabulary_name'        => t('Event category'),
+    'vocabulary_description' => t('Event categories vocabulary.'),
+  );
+  Migration::registerMigration('EasyDDBTaxonomyMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description'            => t('Migration of taxonomy Tags'),
+    'machine_name'           => 'tagsMigration',
+    'source_vocabulary'      => 'ding_content_tags',
+    'destination_vocabulary' => 'ding_content_tags',
+    'vacabulary_name'        => t('Tags'),
+    'vacabulary_description' => t('Tags vocabulary.'),
+  );
+  Migration::registerMigration('EasyDDBTaxonomyMigration', $arguments['machine_name'], $arguments);
+
+  $section = $common_arguments + array(
+    'description'            => t('Migration of taxonomy Section'),
+    'machine_name'           => 'sectionMigration',
+    'source_vocabulary'      => 'eddb_editorial_base',
+    'destination_vocabulary' => 'editorial_base',
+    'vocabulary_name'        => t('Section'),
+    'vocabulary_description' => t('Vocabulary for Editorial Base functionality.'),
+  );
+  Migration::registerMigration('EasyDDBTaxonomyMigration', $section['machine_name'], $section);
+
+  $dams_category = $common_arguments + array(
+    'description'            => t('Migration of taxonomy Mediebibliotekskategorier'),
+    'machine_name'           => 'damsCategoryMigration',
+    'source_vocabulary'      => 'dams_category',
+    'destination_vocabulary' => 'dams_category',
+    'vocabulary_name'        => t('Mediebibliotekskategorier'),
+    'vocabulary_description' => t('Vocabulary for dams module.'),
+  );
+  Migration::registerMigration('EasyDDBTaxonomyMigration', $dams_category['machine_name'], $dams_category);
+
+  // Common migrations.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of users from easyting'),
+    'machine_name' => 'fileMigration',
+    'destination_dir' => 'public://',
+    'source_dir' => 'public://migration/source',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBFileMigration', $arguments['machine_name'], $arguments);
+
+  // Nodes migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type News'),
+    'machine_name' => 'newsMigration',
+    'source_type' => 'ding_news',
+    'destination_type' => 'ding_news',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBNewsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Events'),
+    'machine_name' => 'eventsMigration',
+    'source_type' => 'ding_event',
+    'destination_type' => 'ding_event',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBEventsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Library'),
+    'machine_name' => 'libraryMigration',
+    'source_type' => 'ding_library',
+    'destination_type' => 'ding_library',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBLibraryMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Page'),
+    'machine_name' => 'pageMigration',
+    'source_type' => 'ding_page',
+    'destination_type' => 'ding_page',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBPageMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Campaign'),
+    'machine_name' => 'campaignMigration',
+    'source_type' => 'ding_campaign',
+    'destination_type' => 'ding_campaign',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBCampaignMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of campaign table.'),
+    'machine_name' => 'campaignTableMigration',
+  );
+  Migration::registerMigration('EasyDDBCampaignTableMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of campaign rules.'),
+    'machine_name' => 'campaignRulesMigration',
+  );
+  Migration::registerMigration('EasyDDBCampaignRulesMigration', $arguments['machine_name'], $arguments);
+
+  // OG migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og membership type'),
+    'machine_name' => 'ogMembershipTypeMigration',
+  );
+  Migration::registerMigration('EasyDDBOgMembershipTypeMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og membership'),
+    'machine_name' => 'ogMembershipMigration',
+  );
+  Migration::registerMigration('EasyDDBOgMembershipMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og menu'),
+    'machine_name' => 'ogMenuMigration',
+  );
+  Migration::registerMigration('EasyDDBOgMenuMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og role'),
+    'machine_name' => 'ogRoleMigration',
+  );
+  Migration::registerMigration('EasyDDBOgRoleMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og role permission'),
+    'machine_name' => 'ogRolePermissionMigration',
+  );
+  Migration::registerMigration('EasyDDBOgRolePermissionMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of og users roles'),
+    'machine_name' => 'ogUsersRolesMigration',
+  );
+  Migration::registerMigration('EasyDDBOgUsersRolesMigration', $arguments['machine_name'], $arguments);
+
+  // Ting object migration group.
+  // $arguments = $common_arguments + array(
+  //   'description' => t('Migration of ting object'),
+  //   'machine_name' => 'tingObjectMigration',
+  // );
+  // Migration::registerMigration('EasyDDBTingObjectMigration', $arguments['machine_name'], $arguments);
+
+  // $arguments = $common_arguments + array(
+  //   'description' => t('Migration of ting object revision'),
+  //   'machine_name' => 'tingObjectRevisionMigration',
+  // );
+  // Migration::registerMigration('EasyDDBTingObjectRevisionMigration', $arguments['machine_name'], $arguments);
+
+  // Bookmark migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of bookmark'),
+    'machine_name' => 'bookmarkMigration',
+  );
+  Migration::registerMigration('EasyDDBBookmarkMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of bookmark types'),
+    'machine_name' => 'bookmarkTypesMigration',
+  );
+  Migration::registerMigration('EasyDDBBookmarkTypesMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of bookmark counts'),
+    'machine_name' => 'bookmarkCountsMigration',
+  );
+  Migration::registerMigration('EasyDDBBookmarkCountsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of bookmark content'),
+    'machine_name' => 'bookmarkContentMigration',
+  );
+  Migration::registerMigration('EasyDDBBookmarkContentMigration', $arguments['machine_name'], $arguments);
+
+  // Menu migration group.
+  $arguments = $common_arguments + array(
+    'machine_name' => 'menuMigration',
+    'description' => t('Migration of menu.'),
+  );
+  Migration::registerMigration('EasyDDBMenuMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'menuLinksMigration',
+    'description' => t('Migration of menu links'),
+    'menu_migration' => 'menuMigration',
+    'node_migrations' => array('newsMigration', 'eventsMigration', 'libraryMigration', 'pageMigration', 'campaignMigration'),
+    'term_migrations' => array('newsCategoryMigration', 'eventCategoryMigration', 'tagsMigration', 'sectionMigration', 'damsCategoryMigration'),
+  );
+  Migration::registerMigration('EasyDDBMenuLinksMigration',  $arguments['machine_name'], $arguments);
+
+  // Dibs migration group.
+  $arguments = $common_arguments + array(
+    'machine_name' => 'dibsSettingsMigration',
+    'description' => t('Migration of dibs settings.'),
+  );
+  Migration::registerMigration('EasyDDBDibsSettingsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'dibsTransactionsMigration',
+    'description' => t('Migration of dibs transactions.'),
+  );
+  Migration::registerMigration('EasyDDBDibsTransactionsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'dibsTransactionsLogMigration',
+    'description' => t('Migration of dibs transactions log.'),
+  );
+  Migration::registerMigration('EasyDDBDibsTransactionsLogMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'dibsSplitPaymentsMigration',
+    'description' => t('Migration of dibs split payments.'),
+  );
+  Migration::registerMigration('EasyDDBDibsSplitPaymentsMigration', $arguments['machine_name'], $arguments);
+
+  $editorial_dashboard_comments = $common_arguments + array(
+      'description'  => t('Migration of editorial dashboard comments'),
+      'machine_name' => 'editorialDashboardCommentsMigration',
+  );
+  Migration::registerMigration('EasyDDBEditorialDashboardCommentsMigration', $editorial_dashboard_comments['machine_name'], $editorial_dashboard_comments);
+
+  // Opening hours migration group.
+  $arguments = $common_arguments + array(
+    'machine_name' => 'openingHoursMigration',
+    'description' => t('Migration of opening Hours.'),
+  );
+  Migration::registerMigration('EasyDDBOpeningHoursMigration', $arguments['machine_name'], $arguments);
+
+  // Webform migration group.
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormMigration',
+    'description' => t('Migration of webform table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormComponentMigration',
+    'description' => t('Migration of webform_component table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormComponentMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormConditionalMigration',
+    'description' => t('Migration of webform_conditional table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormConditionalMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormConditionalRulesMigration',
+    'description' => t('Migration of webform_conditional_rules table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormConditionalRulesMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormEmailsMigration',
+    'description' => t('Migration of webform_emails table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormEmailsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webForLastDownloadMigration',
+    'description' => t('Migration of webform_last_download table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormLastDownloadMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormRolesMigration',
+    'description' => t('Migration of webform_roles table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormRolesMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormSubmissionsMigration',
+    'description' => t('Migration of webform_submissions table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormSubmissionsMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'machine_name' => 'webFormSubmissionsDataMigration',
+    'description' => t('Migration of webform_submitted_data table.'),
+  );
+  Migration::registerMigration('EasyDDBWebFormSubmissionsDataMigration', $arguments['machine_name'], $arguments);
+
+  // Place2book migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of place2book'),
+    'machine_name' => 'place2BookMigration',
+  );
+  Migration::registerMigration('EasyDDBPlace2BookMigration', $arguments['machine_name'], $arguments);
+
+  // Relation migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of relation.'),
+    'machine_name' => 'relationMigration',
+  );
+  Migration::registerMigration('EasyDDBRelationMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of relation bundles.'),
+    'machine_name' => 'relationBundlesMigration',
+  );
+  Migration::registerMigration('EasyDDBRelationBundlesMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of relation revision.'),
+    'machine_name' => 'relationRevisionMigration',
+  );
+  Migration::registerMigration('EasyDDBRelationRevisionMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of relation type.'),
+    'machine_name' => 'relationTypeMigration',
+  );
+  Migration::registerMigration('EasyDDBRelationTypeMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of endpoints.'),
+    'machine_name' => 'endpointsMigration',
+  );
+  Migration::registerMigration('EasyDDBEndPointMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of revesions endpoints.'),
+    'machine_name' => 'endpointsRevisionMigration',
+  );
+  Migration::registerMigration('EasyDDBEndPointRevisionMigration', $arguments['machine_name'], $arguments);
+}
+
+/**
+ * Implements hook_migrate_api().
+ */
+function easyddb_migration_migrate_api() {
+  $api = array(
+    'api' => 2,
+  );
+  return $api;
+}

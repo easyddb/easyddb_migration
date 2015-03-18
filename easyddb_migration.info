@@ -1,0 +1,23 @@
+name = easyDDB Migration
+description = Migrate content from easyTing to easyDDB
+package = easyDDB
+core = 7.x
+
+dependencies[] = migrate
+dependencies[] = migrate_d2d
+dependencies[] = migrate_extras
+
+files[] = includes/user.class.inc
+files[] = includes/taxonomy.class.inc
+files[] = includes/file.class.inc
+files[] = includes/node.class.inc
+files[] = includes/og.class.inc
+files[] = includes/ting_object.class.inc
+files[] = includes/bookmark.class.inc
+files[] = includes/menu.class.inc
+files[] = includes/dibs.class.inc
+files[] = includes/dashboard_comments.class.inc
+files[] = includes/opening_hours.class.inc
+files[] = includes/webform.class.inc
+files[] = includes/place2book.class.inc
+files[] = includes/relation.class.inc

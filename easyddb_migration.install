@@ -1,0 +1,142 @@
+<?php
+
+/**
+ * Automaticly creates OG and adds editorial users to these groups.
+ */
+function easyddb_migration_update_7001(&$sandbox) {
+  $ids = db_query("select ur.uid from role r join users_roles ur on r.rid=ur.rid where r.name in (:roles)",
+    array(
+      ':roles' => array(
+        'administrators',
+        'editor',
+        'guest blogger',
+        'local administrator',
+        'local editor',
+      )
+    )
+  )->fetchAllKeyed(0, 0);
+  $users = user_load_multiple($ids);
+
+  $voc = taxonomy_vocabulary_machine_name_load('editorial_base');
+  $terms = taxonomy_get_tree($voc->vid);
+
+  foreach ($terms as $key => $term) {
+
+    $node = new stdClass();
+
+    $node->type = "editorial_base";
+    $node->name = 'admin';
+    $node->uid = 1;
+    $node->title = t("{$term->name} OG");
+    $node->body = "";
+    $node->status = 1;
+    $node->promote = 0;
+    $node->comment = 1;
+    $node->language = 'da';
+
+    $node->og_description = t("OG Description");
+    $node->og_register = 0;
+    $node->og_directory = 0;
+    $node->og_private = 1;
+    $node->og_selective = 3;
+
+    $node = node_submit($node);
+    node_save($node);
+
+    foreach ($users as $key => $user) {
+      og_group('node', $node->nid, array(
+        "entity_type" => "user",
+        "entity" => $user,
+        "membership type" => OG_MEMBERSHIP_TYPE_DEFAULT,
+      ));
+    }
+
+    $t = taxonomy_term_load($term->tid);
+    og_group('node', $node->nid, array(
+      "entity_type" => "taxonomy_term",
+      "field_name" => 'og_group_ref_eb',
+      "entity" => $t,
+      "membership type" => OG_MEMBERSHIP_TYPE_DEFAULT,
+    ));
+  }
+}
+
+/**
+ * Reset caches of nodes.
+ */
+function easyddb_migration_update_7002(&$sandbox) {
+  entity_get_controller('node')->resetCache();
+}
+
+/**
+ * Updates nids in links inside the body of nodes.
+ */
+function easyddb_migration_update_7003(&$sandbox) {
+  $patterns = array(
+    array('/node\/(\d+)/'),
+    array('/taxonomy\/term\/(\d+)/'),
+  );
+
+  $maps = array(
+    'ding_news' => 'field_ding_news_body',
+    'ding_event' => 'field_ding_event_body',
+    'ding_library' => 'field_ding_library_body',
+    'ding_page' => 'field_ding_page_body',
+    'ding_campaign' => 'field_camp_text_full',
+  );
+  $callback_node = function($matches) {
+    // Array of all related migration.
+    $sources = array(
+      'newsMigration',
+      'eventsMigration',
+      'libraryMigration',
+      'pageMigration',
+      'campaignMigration',
+    );
+    foreach ($sources as $source) {
+      $source_migration = Migration::getInstance($source);
+      $source_migration->sourceKeyMap['nid'] = 'nid';
+      $destid = $source_migration->getMap()->lookupDestinationID(array($matches[1]));
+      $nid = $matches[1];
+      if (!empty($destid)) {
+        $nid = current($destid);
+        break;
+      }
+    }
+    return "node/{$nid}";
+  };
+
+   $callback_term = function($matches) {
+    // Array of all related migration.
+    $sources = array(
+      'newsCategoryMigration',
+      'eventCategoryMigration',
+      'tagsMigration',
+      'sectionMigration',
+      'damsCategoryMigration'
+    );
+
+    foreach ($sources as $source) {
+      $source_migration = Migration::getInstance($source);
+      $source_migration->sourceKeyMap['tid'] = 'tid';
+      $destid = $source_migration->getMap()->lookupDestinationID(array($matches[1]));
+      $tid = $matches[1];
+      if (!empty($destid)) {
+        $tid = current($destid);
+        break;
+      }
+    }
+    return "taxonomy/term/{$tid}";
+  };
+  $nodes = entity_load('node');
+  foreach ($nodes as $node) {
+    if (isset($node->type) && !empty($node->type) && isset($maps[$node->type]) && isset($node->{$maps[$node->type]}[LANGUAGE_NONE][0]) && !empty($node->{$maps[$node->type]}[LANGUAGE_NONE][0])) {
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value'] = preg_replace_callback($patterns[0], $callback_node, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value']);
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value'] = preg_replace_callback($patterns[1], $callback_term, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['value']);
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value'] = preg_replace_callback($patterns[0], $callback_node, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value']);
+      $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value'] = preg_replace_callback($patterns[1], $callback_term, $node->{$maps[$node->type]}[LANGUAGE_NONE][0]['safe_value']);
+
+      node_save($node);
+    }
+  }
+}
