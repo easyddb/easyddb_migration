@@ -137,6 +137,17 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
         $row->field_category = array();
       }
     }
+
+    if (isset($row->field_editorial_base_n) && !empty($row->field_editorial_base_n)) {
+      $query =  Database::getConnection('default', 'migration')
+        ->select('taxonomy_term_data', 'd')
+        ->fields('d', array('tid'))
+        ->condition('d.tid', $row->field_editorial_base_n)
+        ->execute();
+      if ($query->rowCount() == 0) {
+        $row->field_editorial_base_n = array();
+      }
+    }
   }
 
   public static function setActualData($body) {
