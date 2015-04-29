@@ -43,8 +43,7 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_news_body', 'field_ding_body');
     $this->addFieldMapping('field_ding_news_body:format', 'field_ding_body:format');
 
-    $this->addFieldMapping('field_ding_news_list_image', 'field_list_image')
-      ->sourceMigration('fileMigration');
+    $this->addFieldMapping('field_ding_news_list_image', 'field_list_image')->sourceMigration('fileMigration');
     $this->addFieldMapping('field_ding_news_list_image:file_class')->defaultValue('MigrateFileFid');
     $this->addFieldMapping('field_ding_news_list_image:preserve_files')->defaultValue(TRUE);
     $this->addFieldMapping('field_ding_news_list_image:alt', 'field_list_image:alt');
@@ -59,10 +58,8 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_editorial_base:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_editorial_base:create_term')->defaultValue(FALSE);
 
-    $this->addFieldMapping('field_ding_news_title_image', 'field_main_image')
-      ->sourceMigration('fileMigration');
-    $this->addFieldMapping('field_ding_news_title_image:file_class')
-      ->defaultValue('MigrateFileFid');
+    $this->addFieldMapping('field_ding_news_title_image', 'field_main_image')->sourceMigration('fileMigration');
+    $this->addFieldMapping('field_ding_news_title_image:file_class')->defaultValue('MigrateFileFid');
     $this->addFieldMapping('field_ding_news_title_image:alt', 'field_main_image:alt');
     $this->addFieldMapping('field_ding_news_title_image:title', 'field_main_image:title');
     $this->addFieldMapping('field_ding_news_title_image:preserve_files')->defaultValue(TRUE);
@@ -163,7 +160,6 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
       function($matches) {
         if (strstr($matches[0], 'view_mode')) {
           $maps = array(
-            'ding_dams_download_link' => 'default',
             'media_link' => 'default',
             'wysiwig' => 'default',
             'media_original' => 'default',
@@ -175,7 +171,8 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
             'ding_dams_download_icon' => 'easyddb_dams_media_browser_download_icon',
             'ding_dams_download_link' => 'easyddb_dams_media_browser_download_link',
           );
-          return "\"view_mode\":\"{$maps[$matches[1]]}\"";
+          $mode = isset($maps[$matches[1]]) ? $maps[$matches[1]] : 'default';
+          return "\"view_mode\":\"{$mode}\"";
         }
         else {
           $source_migration = Migration::getInstance('fileMigration');
@@ -236,20 +233,16 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_event_tags:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_ding_event_tags:create_term')->defaultValue(FALSE);
 
-    $this->addFieldMapping('field_ding_event_title_image', 'field_main_image')
-      ->sourceMigration('fileMigration');
+    $this->addFieldMapping('field_ding_event_title_image', 'field_main_image')->sourceMigration('fileMigration');
     $this->addFieldMapping('field_ding_event_title_image:alt', 'field_main_image:alt');
     $this->addFieldMapping('field_ding_event_title_image:title', 'field_main_image:title');
-    $this->addFieldMapping('field_ding_event_title_image:file_class')
-     ->defaultValue('MigrateFileFid');
+    $this->addFieldMapping('field_ding_event_title_image:file_class')->defaultValue('MigrateFileFid');
      $this->addFieldMapping('field_ding_event_title_image:preserve_files')->defaultValue(TRUE);
 
-    $this->addFieldMapping('field_ding_event_list_image', 'field_list_image')
-      ->sourceMigration('fileMigration');
+    $this->addFieldMapping('field_ding_event_list_image', 'field_list_image')->sourceMigration('fileMigration');
     $this->addFieldMapping('field_ding_event_list_image:alt', 'field_list_image:alt');
     $this->addFieldMapping('field_ding_event_list_image:title', 'field_list_image:title');
-    $this->addFieldMapping('field_ding_event_list_image:file_class')
-     ->defaultValue('MigrateFileFid');
+    $this->addFieldMapping('field_ding_event_list_image:file_class')->defaultValue('MigrateFileFid');
      $this->addFieldMapping('field_ding_event_list_image:preserve_files')->defaultValue(TRUE);
 
 
@@ -386,20 +379,16 @@ class EasyDDBLibraryMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_ding_library_fax_number', 'field_fax');
 
 
-    $this->addFieldMapping('field_ding_library_title_image', 'field_main_image')
-      ->sourceMigration('fileMigration');
+    $this->addFieldMapping('field_ding_library_title_image', 'field_main_image')->sourceMigration('fileMigration');
     $this->addFieldMapping('field_ding_library_title_image:alt', 'field_main_image:alt');
     $this->addFieldMapping('field_ding_library_title_image:title', 'field_main_image:title');
-    $this->addFieldMapping('field_ding_library_title_image:file_class')
-     ->defaultValue('MigrateFileFid');
+    $this->addFieldMapping('field_ding_library_title_image:file_class')->defaultValue('MigrateFileFid');
      $this->addFieldMapping('field_ding_library_title_image:preserve_files')->defaultValue(TRUE);
 
-    $this->addFieldMapping('field_ding_library_list_image', 'field_list_image')
-      ->sourceMigration('fileMigration'); // @todo After implementing file migration.
+    $this->addFieldMapping('field_ding_library_list_image', 'field_list_image')->sourceMigration('fileMigration');
     $this->addFieldMapping('field_ding_library_list_image:alt', 'field_list_image:alt');
     $this->addFieldMapping('field_ding_library_list_image:title', 'field_list_image:title');
-    $this->addFieldMapping('field_ding_library_list_image:file_class')
-     ->defaultValue('MigrateFileFid');
+    $this->addFieldMapping('field_ding_library_list_image:file_class')->defaultValue('MigrateFileFid');
      $this->addFieldMapping('field_ding_library_list_image:preserve_files')->defaultValue(TRUE);
 
     $this->addFieldMapping('field_ding_library_links', 'field_links');
@@ -449,8 +438,7 @@ class EasyDDBPageMigration extends DrupalNode7Migration {
       ->sourceMigration('fileMigration');
     $this->addFieldMapping('field_ding_page_list_image:alt', 'field_page_list_image:alt');
     $this->addFieldMapping('field_ding_page_list_image:title', 'field_page_list_image:title');
-    $this->addFieldMapping('field_ding_page_list_image:file_class')
-     ->defaultValue('MigrateFileFid');
+    $this->addFieldMapping('field_ding_page_list_image:file_class')->defaultValue('MigrateFileFid');
     $this->addFieldMapping('field_ding_page_list_image:preserve_files')->defaultValue(TRUE);
 
     $this->addFieldMapping('field_ding_page_lead', 'field_ding_body:summary');
@@ -506,8 +494,7 @@ class EasyDDBCampaignMigration extends DrupalNode7Migration {
       ->sourceMigration('fileMigration');
     $this->addFieldMapping('field_camp_image:alt', 'field_camp_image:alt');
     $this->addFieldMapping('field_camp_image:title', 'field_camp_image:title');
-    $this->addFieldMapping('field_camp_image:file_class')
-     ->defaultValue('MigrateFileFid');
+    $this->addFieldMapping('field_camp_image:file_class')->defaultValue('MigrateFileFid');
 
     $this->addFieldMapping('field_camp_link', 'field_camp_link');
     $this->addFieldMapping('field_camp_settings', 'field_camp_settings');
