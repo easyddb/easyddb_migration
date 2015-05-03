@@ -30,6 +30,12 @@ class EasyDDBUserMigration extends DrupalUser7Migration {
     // Dependencies.
     $this->dependencies[] = 'roleMigration';
   }
+
+  public function prepare($e, $r) {
+    if (empty($e->roles)) {
+      $e->roles = array( 8 => '8');
+    }
+  }
 }
 
 /**
