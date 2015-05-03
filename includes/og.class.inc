@@ -7,8 +7,8 @@ class EasyDDBOgMembershipTypeMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'og_membership_type';
@@ -58,8 +58,8 @@ class EasyDDBOgMembershipMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
 
     // Dependencies.
     $this->dependencies[] ='menuLinksMigration';
@@ -141,9 +141,8 @@ class EasyDDBOgMenuMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
-    parent::__construct($group);
-
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'og_menu';
@@ -189,9 +188,8 @@ class EasyDDBOgRoleMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
-    parent::__construct($group);
-
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'og_role';
@@ -239,9 +237,8 @@ class EasyDDBOgRolePermissionMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
-    parent::__construct($group);
-
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'og_role_permission';
@@ -289,9 +286,8 @@ class EasyDDBOgUsersRolesMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
-    parent::__construct($group);
-
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBOgMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'og_users_roles';

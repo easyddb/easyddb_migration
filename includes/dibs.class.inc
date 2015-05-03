@@ -7,8 +7,8 @@ class EasyDDBDibsSettingsMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBDibsMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBDibsMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'dibs_order_id_settings';
@@ -74,8 +74,8 @@ class EasyDDBDibsTransactionsMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBDibsMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBDibsMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'dibs_transactions';
@@ -151,8 +151,8 @@ class EasyDDBDibsTransactionsLogMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBDibsMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBDibsMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'dibs_transactions_log';
@@ -209,8 +209,8 @@ class EasyDDBDibsSplitPaymentsMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBDibsMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBDibsMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'dibs_split_payments';

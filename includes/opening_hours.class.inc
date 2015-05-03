@@ -7,8 +7,8 @@ class EasyDDBOpeningHoursMigration extends Migration {
 
    public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBOpeningHoursMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBOpeningHoursMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'opening_hours';

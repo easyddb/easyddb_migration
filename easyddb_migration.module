@@ -86,6 +86,16 @@ function easyddb_migration_flush_caches() {
   );
   Migration::registerMigration('EasyDDBTaxonomyMigration', $dams_category['machine_name'], $dams_category);
 
+  $arguments = $common_arguments + array(
+    'description'            => t('Migration of taxonomy mailinglist'),
+    'machine_name'           => 'mailinglistMigration',
+    'source_vocabulary'      => 'mailinglist',
+    'destination_vocabulary' => 'mailinglist',
+    'vocabulary_name'        => t('Mailinglist'),
+    'vocabulary_description' => t('Vocabulary for emailkanon.'),
+  );
+  Migration::registerMigration('EasyDDBTaxonomyMigration', $arguments['machine_name'], $arguments);
+
   // Common migrations.
   $arguments = $common_arguments + array(
     'description' => t('Migration of users from easyting'),
@@ -141,6 +151,15 @@ function easyddb_migration_flush_caches() {
     'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBCampaignMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of content type Newsletters'),
+    'machine_name' => 'newslettersMigration',
+    'source_type' => 'newsletters',
+    'destination_type' => 'newsletters',
+    'user_migration' => 'userMigration',
+  );
+  Migration::registerMigration('EasyDDBNewslettersMigration', $arguments['machine_name'], $arguments);
 
   $arguments = $common_arguments + array(
     'description' => t('Migration of campaign table.'),
@@ -381,6 +400,38 @@ function easyddb_migration_flush_caches() {
     'machine_name' => 'endpointsRevisionMigration',
   );
   Migration::registerMigration('EasyDDBEndPointRevisionMigration', $arguments['machine_name'], $arguments);
+
+  // Emailkanon migration group.
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of emailkanon first_login_table.'),
+    'machine_name' => 'emailkanonFirstLoginMigration',
+  );
+  Migration::registerMigration('EasyDDBEmailkanonFirstLoginMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of emailkanon users.'),
+    'machine_name' => 'emailkanonUsersMigration',
+  );
+  Migration::registerMigration('EasyDDBEmailkanonUsersMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of emailkanon queue.'),
+    'machine_name' => 'emailkanonQueueMigration',
+  );
+  Migration::registerMigration('EasyDDBEmailkanonQueueMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of emailkanon newsletters.'),
+    'machine_name' => 'emailkanonNewslettersMigration',
+  );
+  Migration::registerMigration('EasyDDBEmailkanonNewslettersMigration', $arguments['machine_name'], $arguments);
+
+  $arguments = $common_arguments + array(
+    'description' => t('Migration of emailkanon mailinglists.'),
+    'machine_name' => 'emailkanonMailinglistsMigration',
+  );
+  Migration::registerMigration('EasyDDBEmailkanonMailinglistsMigration', $arguments['machine_name'], $arguments);
+
 }
 
 /**

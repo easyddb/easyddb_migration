@@ -3,8 +3,8 @@
 class EasyDDBEditorialDashboardCommentsMigration extends Migration {
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBDashboardCommentsMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBDashboardCommentsMigrationGroup');
 
     // Dependencies.
     $this->dependencies[] = 'newsMigration';
@@ -57,3 +57,4 @@ class EasyDDBEditorialDashboardCommentsMigration extends Migration {
     }
   }
 }
+

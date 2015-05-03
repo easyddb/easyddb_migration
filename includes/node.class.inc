@@ -160,12 +160,8 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
       function($matches) {
         if (strstr($matches[0], 'view_mode')) {
           $maps = array(
-            'media_link' => 'default',
-            'wysiwig' => 'default',
-            'media_original' => 'default',
             'teaser' => 'teaser',
             'preview' => 'preview',
-            'default' => 'default',
             'ding_dams_inline' => 'easyddb_dams_media_browser_inline',
             'ding_dams_popup' => 'easyddb_dams_media_browser_popup',
             'ding_dams_download_icon' => 'easyddb_dams_media_browser_download_icon',
@@ -655,6 +651,69 @@ class EasyDDBCampaignRulesMigration extends Migration {
 
           $e->rule = $r->type == 'rule_page' ? "[nid:{$destid}]" : "[tid:{$destid}]";
         }
+      }
+    }
+  }
+}
+
+/**
+ * Handling specific to a Drupal 7 source for node with content type news.
+ */
+class EasyDDBNewslettersMigration extends DrupalNode7Migration {
+
+  /**
+   * @var bool editorial dashboard module enabled.
+   */
+  private $ed_module = FALSE;
+
+  /**
+   * @param array $arguments
+   */
+  public function __construct(array $arguments) {
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBNodeMigrationGroup');
+
+    // Dependencies.
+    $this->dependencies[] = 'newsMigration';
+    $this->dependencies[] = 'eventsMigration';
+    $this->dependencies[] = 'libraryMigration';
+    $this->dependencies[] = 'pageMigration';
+    $this->dependencies[] = 'campaignMigration';
+    $this->dependencies[] = 'userMigration';
+    $this->dependencies[] = 'mailinglistMigration';
+
+    //Mapping.
+    $this->addFieldMapping('field_newsletter_term', 'field_newsletter_term')->sourceMigration('mailinglistMigration');
+    $this->addFieldMapping('field_newsletter_term:source_type')->defaultValue('tid');
+    $this->addFieldMapping('field_newsletter_term:create_term')->defaultValue(FALSE);
+
+    $this->addFieldMapping('field_newsletter_image', 'field_newsletter_image')->sourceMigration('fileMigration');
+    $this->addFieldMapping('field_newsletter_image:file_class')->defaultValue('MigrateFileFid');
+    $this->addFieldMapping('field_newsletter_image:preserve_files')->defaultValue(TRUE);
+    $this->addFieldMapping('field_newsletter_image:alt', 'field_newsletter_image:alt');
+    $this->addFieldMapping('field_newsletter_image:title', 'field_newsletter_image:title');
+
+    $this->addFieldMapping('field_footer', 'field_footer');
+    $this->addFieldMapping('field_footer:summary', 'field_footer:summary');
+    $this->addFieldMapping('field_footer:format', 'field_footer:format');
+
+    $this->addFieldMapping('field_newsletter_items', 'field_newsletter_items')->sourceMigration(array('newsMigration', 'eventsMigration', 'libraryMigration', 'pageMigration', 'campaignMigration'));
+
+  }
+
+  public function prepareRow($row) {
+    if (parent::prepareRow($row) === FALSE) {
+      return FALSE;
+    }
+
+    if (isset($row->field_newsletter_term) && !empty($row->field_newsletter_term)) {
+      $query =  Database::getConnection('default', 'migration')
+        ->select('taxonomy_term_data', 'd')
+        ->fields('d', array('tid'))
+        ->condition('d.tid', $row->field_newsletter_term)
+        ->execute();
+      if ($query->rowCount() == 0) {
+        $row->field_newsletter_term = array();
       }
     }
   }

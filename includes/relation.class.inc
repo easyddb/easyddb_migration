@@ -7,8 +7,8 @@ class EasyDDBRelationMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'relation';
@@ -64,8 +64,8 @@ class EasyDDBRelationBundlesMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'relation_bundles';
@@ -146,8 +146,8 @@ class EasyDDBRelationRevisionMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'relation_revision';
@@ -187,6 +187,16 @@ class EasyDDBRelationRevisionMigration extends Migration {
     $this->addFieldMapping('changed', 'changed');
     $this->addFieldMapping('arity', 'arity');
   }
+
+  public function complete($e, $r) {
+    db_update('relation')
+      ->fields(array(
+        'vid' => $e->vid,
+        'status' => 1,
+      ))
+    ->condition('rid', $e->rid)
+    ->execute();
+  }
 }
 
 /**
@@ -196,8 +206,8 @@ class EasyDDBRelationTypeMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'relation_type';
@@ -250,8 +260,8 @@ class EasyDDBEndPointMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
 
     // Dependencies.
     $this->dependencies[] = 'newsMigration';
@@ -360,8 +370,8 @@ class EasyDDBEndPointRevisionMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBRelationMigrationGroup');
 
     // Dependencies.
     $this->dependencies[] = 'newsMigration';

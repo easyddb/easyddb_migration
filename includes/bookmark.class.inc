@@ -7,8 +7,8 @@ class EasyDDBBookmarkMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBBookmarkMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBBookmarkMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'flags';
@@ -57,8 +57,8 @@ class EasyDDBBookmarkTypesMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBBookmarkMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBBookmarkMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'flag_types';
@@ -111,8 +111,8 @@ class EasyDDBBookmarkCountsMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBBookmarkMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBBookmarkMigrationGroup');
 
     // Set table name of source data.
     $table_name = 'flag_counts';
@@ -161,8 +161,8 @@ class EasyDDBBookmarkContentMigration extends Migration {
 
   public function __construct($arguments) {
     // Set default group.
-    $group = MigrateGroup::getInstance('EasyDDBBookmarkMigrationGroup');
-    parent::__construct($group);
+    parent::__construct($arguments);
+    $this->group = MigrateGroup::getInstance('EasyDDBBookmarkMigrationGroup');
 
     // Dependencies.
     $this->dependencies[] = 'userMigration';

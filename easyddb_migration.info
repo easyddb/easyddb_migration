@@ -22,3 +22,4 @@ files[] = includes/opening_hours.class.inc
 files[] = includes/webform.class.inc
 files[] = includes/place2book.class.inc
 files[] = includes/relation.class.inc
+files[] = includes/emailkanon.class.inc
