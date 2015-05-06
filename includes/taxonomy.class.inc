@@ -11,6 +11,7 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
 
     parent::__construct($arguments);
     $this->group = MigrateGroup::getInstance('EasyDDBTaxonomyMigrationGroup');
+    $this->addFieldMapping('description:format', 'description:format');
   }
 
   private function vocabularyExist($machineName = NULL) {
@@ -37,13 +38,11 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
   }
 
   private function editorialBaseDefaultPanelVariant() {
-    $handler_name = 'term_editorial_base_panel_context';
-
     $handler = new stdClass();
-    $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
+    $handler->disabled = FALSE;
     $handler->api_version = 1;
-    $handler->name = $handler_name;
-    $handler->task = $page;
+    $handler->name = 'term_editorial_base_panel_context';
+    $handler->task = 'term_view';
     $handler->subtask = '';
     $handler->handler = 'panel_context';
     $handler->weight = 99;
@@ -106,28 +105,30 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
     $display->title = '';
     $display->content = array();
     $display->panels = array();
-      $pane = new stdClass();
-      $pane->pid = 'new-1';
-      $pane->panel = 'main_content';
-      $pane->type = 'views_panes';
-      $pane->subtype = 'tags_list-ding_content_tags';
-      $pane->shown = TRUE;
-      $pane->access = array();
-      $pane->configuration = array(
-        'context' => array(
-          0 => 'argument_term_1',
-        ),
-      );
-      $pane->cache = array();
-      $pane->style = array(
-        'settings' => NULL,
-      );
-      $pane->css = array();
-      $pane->extras = array();
-      $pane->position = 0;
-      $pane->locks = array();
-      $display->content['new-1'] = $pane;
-      $display->panels['main_content'][0] = 'new-1';
+
+    $pane = new stdClass();
+    $pane->pid = 'new-1';
+    $pane->panel = 'main_content';
+    $pane->type = 'views_panes';
+    $pane->subtype = 'tags_list-ding_content_tags';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'context' => array(
+        0 => 'argument_term_1',
+      ),
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 0;
+    $pane->locks = array();
+
+    $display->content['new-1'] = $pane;
+    $display->panels['main_content'][0] = 'new-1';
     $display->hide_title = PANELS_TITLE_FIXED;
     $display->title_pane = '0';
     $handler->conf['display'] = $display;
@@ -140,20 +141,25 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
       return FALSE;
     }
 
-    $handler_name = variable_get('editorial_base_term_panel_handler', 'term_editorial_base_panel_context');
-
-    $page = 'term_view';
-    $task = page_manager_get_task($page);
-    ctools_get_plugins('page_manager', 'task_handlers', 'panel_context');
-
-    $handlers = page_manager_load_sorted_handlers($task, '');
-
-    $handler = isset($handlers[$handler_name]) ? $handlers[$handler_name] : NULL;
-    $tid = $term->tid;
-
-    if (empty($handler)) {
-      $handler = $this->editorialBaseDefaultPanelVariant();
+   $handler_name = variable_get('editorial_base_term_panel_handler', 'term_editorial_base_panel_context');
+    if (empty($handler_name)) {
+      drupal_set_message(t('Not possible to create term_view variant. Firstly, you should choose @handler', array('@handler' => l('handler', 'admin/config/edbase/term_panel'))), 'warning');
+      return FALSE;
     }
+
+    $task = page_manager_get_task('term_view');
+    $handlers = page_manager_load_task_handlers($task, '');
+
+    if (!isset($handlers['term_editorial_base_panel_context'])) {
+      return FALSE;
+    }
+
+    $export = page_manager_export_task_handler($handlers['term_editorial_base_panel_context']);
+    ob_start();
+    eval($export);
+    ob_end_clean();
+
+    $tid = $term->tid;
     // Normally, panels do not support specific panel to node id mapping, so use
     // php code instead.
     $php_code = '$item = menu_get_object(\'taxonomy_term\', 2);if (isset($item->tid) && $item->tid == ' . $tid . ') {return TRUE;}return FALSE;';
@@ -168,9 +174,8 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
     );
 
     $handler_name = "term_view_panel_context_tid_{$tid}";
-    $variant_title = t('Variant for (@term_name)', array('@term_name' => $term->name));
+    $variant_title = t('Edtitorial base term (@term)', array('@term' => $term->name));
     $pipeline = module_exists('panels_ipe') ? 'ipe' : 'standard';
-    unset($handler->did);
     $handler->name = $handler_name;
     $handler->conf['title'] = $variant_title;
     $handler->conf['pipeline'] = $pipeline;
@@ -178,6 +183,10 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
     $handler->weight = -50;
 
     page_manager_save_task_handler($handler);
+  }
+
+  public function prepare($entity, $row) {
+    $entity->description['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->description['und'][0]['value']);
   }
 
   public function complete($entity, $row) {

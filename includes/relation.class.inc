@@ -152,6 +152,9 @@ class EasyDDBRelationRevisionMigration extends Migration {
     // Set table name of source data.
     $table_name = 'relation_revision';
 
+    // Dependencies.
+    $this->dependencies[] = 'relationMigration';
+
     // Set machine name conform to migrate_d2d mechanism.
     $this->machineName = $arguments['machine_name'];
 
@@ -191,8 +194,7 @@ class EasyDDBRelationRevisionMigration extends Migration {
   public function complete($e, $r) {
     db_update('relation')
       ->fields(array(
-        'vid' => $e->vid,
-        'status' => 1,
+        'vid' => $e->vid
       ))
     ->condition('rid', $e->rid)
     ->execute();

@@ -155,8 +155,8 @@ function easyddb_migration_flush_caches() {
   $arguments = $common_arguments + array(
     'description' => t('Migration of content type Newsletters'),
     'machine_name' => 'newslettersMigration',
-    'source_type' => 'newsletters',
-    'destination_type' => 'newsletters',
+    'source_type' => 'newsletter',
+    'destination_type' => 'newsletter',
     'user_migration' => 'userMigration',
   );
   Migration::registerMigration('EasyDDBNewslettersMigration', $arguments['machine_name'], $arguments);

@@ -88,6 +88,7 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
 
   public function prepare($entity, $row) {
     $entity->field_ding_news_body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_news_body['und'][0]['value']);
+    $entity->field_ding_news_lead['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_news_lead['und'][0]['value']);
     $ed_nodes = variable_get('editorial_base_content_types');
     $node_ed = !empty($ed_nodes['ding_news']);
     $node_ed_status = $row->edns_status;
@@ -276,6 +277,7 @@ class EasyDDBEventsMigration extends DrupalNode7Migration {
 
   public function prepare($entity, $row) {
     $entity->field_ding_event_body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_event_body['und'][0]['value']);
+    $entity->field_ding_event_lead['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_event_lead['und'][0]['value']);
     if (isset($row->field_event_date[0]) && !empty($row->field_event_date[0])) {
       $entity->field_ding_event_date['und'][0]['value'] = $row->field_event_date[0];
       $entity->field_ding_event_date['und'][0]['timezone'] = "Europe/Copenhagen";
@@ -405,6 +407,7 @@ class EasyDDBLibraryMigration extends DrupalNode7Migration {
 
   public function prepare($entity, $row) {
     $entity->field_ding_library_body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_library_body['und'][0]['value']);
+    $entity->field_ding_library_lead['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_library_lead['und'][0]['value']);
   }
 }
 
@@ -449,6 +452,7 @@ class EasyDDBPageMigration extends DrupalNode7Migration {
 
   public function prepare($entity, $row) {
     $entity->field_ding_page_body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_page_body['und'][0]['value']);
+    $entity->field_ding_page_lead['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_ding_page_lead['und'][0]['value']);
   }
 
   public function prepareRow($row) {
@@ -508,6 +512,7 @@ class EasyDDBCampaignMigration extends DrupalNode7Migration {
 
   public function prepare($entity, $row) {
     $entity->field_camp_text_full['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_camp_text_full['und'][0]['value']);
+    $entity->field_camp_text_plain['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_camp_text_plain['und'][0]['value']);
   }
 }
 
