@@ -186,7 +186,7 @@ class EasyDDBTaxonomyMigration extends DrupalTerm7Migration {
   }
 
   public function prepare($entity, $row) {
-    $entity->description['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->description['und'][0]['value']);
+    $entity->description = EasyDDBNewsMigration::setActualData($entity->description);
   }
 
   public function complete($entity, $row) {

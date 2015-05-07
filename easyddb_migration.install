@@ -140,3 +140,47 @@ function easyddb_migration_update_7003(&$sandbox) {
     }
   }
 }
+
+/**
+ * Updates descriptions of terms.
+ */
+function easyddb_migration_update_7004(&$sandbox) {
+  $result = db_query('
+    select sourceid1 from migrate_map_newscategorymigration
+    union all
+    select sourceid1 from migrate_map_tagsmigration
+    union all
+    select sourceid1 from migrate_map_sectionmigration
+    union all
+    select sourceid1 from migrate_map_damscategorymigration');
+
+  $sourceids = array();
+  foreach ($result as $item) {
+    $sourceids[] = $item->sourceid1;
+  }
+
+  $query =  Database::getConnection('default', 'migration')
+      ->select('taxonomy_term_data', 't');
+    $query->fields('t', array('tid', 'description'));
+    $query->condition('t.tid', $sourceids, 'IN');
+    $result = $query->execute();
+
+    foreach ($result as $orig) {
+      $orig->description = EasyDDBNewsMigration::setActualData($orig->description);
+      db_query(
+        'UPDATE taxonomy_term_data t
+          JOIN (
+            select sourceid1, destid1 from migrate_map_newscategorymigration
+            union all
+            select sourceid1, destid1 from migrate_map_tagsmigration
+            union all
+            select sourceid1, destid1 from migrate_map_sectionmigration
+            union all
+            select sourceid1, destid1 from migrate_map_damscategorymigration
+          ) q on t.tid = q.destid1
+        SET t.description = :dsc
+        where q.sourceid1=:id',
+        array(':dsc' => $orig->description, ':id' => $orig->tid)
+      );
+    }
+}
