@@ -156,6 +156,7 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
     $patterns = array(
       '/"view_mode":"(\w+)"/',
       '/"fid":"(\d+)"/',
+      '/"data-file_info":"[^\s]*",/'
     );
     return preg_replace_callback($patterns,
       function($matches) {
@@ -171,12 +172,15 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
           $mode = isset($maps[$matches[1]]) ? $maps[$matches[1]] : 'default';
           return "\"view_mode\":\"{$mode}\"";
         }
-        else {
+        elseif (strstr($matches[0], 'fid')) {
           $source_migration = Migration::getInstance('fileMigration');
           $source_migration->sourceKeyMap['fid'] = 'fid';
           $destid = $source_migration->getMap()->lookupDestinationID(array($matches[1]));
           $fid = !empty($destid) ? current($destid) : $matches[1];
           return "\"fid\":\"{$fid}\"";
+        }
+        else {
+           return "";
         }
       },
     $body);
