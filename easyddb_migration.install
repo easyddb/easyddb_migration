@@ -69,7 +69,7 @@ function easyddb_migration_update_7002(&$sandbox) {
 }
 
 /**
- * Updates nids in links inside the body of nodes.
+ * Updates nids/tids in links inside the body of nodes.
  */
 function easyddb_migration_update_7003(&$sandbox) {
   $patterns = array(
@@ -161,26 +161,93 @@ function easyddb_migration_update_7004(&$sandbox) {
 
   $query =  Database::getConnection('default', 'migration')
       ->select('taxonomy_term_data', 't');
-    $query->fields('t', array('tid', 'description'));
-    $query->condition('t.tid', $sourceids, 'IN');
-    $result = $query->execute();
+  $query->fields('t', array('tid', 'description'));
+  $query->condition('t.tid', $sourceids, 'IN');
+  $result = $query->execute();
 
-    foreach ($result as $orig) {
-      $orig->description = EasyDDBNewsMigration::setActualData($orig->description);
-      db_query(
-        'UPDATE taxonomy_term_data t
-          JOIN (
-            select sourceid1, destid1 from migrate_map_newscategorymigration
-            union all
-            select sourceid1, destid1 from migrate_map_tagsmigration
-            union all
-            select sourceid1, destid1 from migrate_map_sectionmigration
-            union all
-            select sourceid1, destid1 from migrate_map_damscategorymigration
-          ) q on t.tid = q.destid1
-        SET t.description = :dsc
-        where q.sourceid1=:id',
-        array(':dsc' => $orig->description, ':id' => $orig->tid)
-      );
+  foreach ($result as $orig) {
+    $orig->description = EasyDDBNewsMigration::setActualData($orig->description);
+    db_query(
+      'UPDATE taxonomy_term_data t
+        JOIN (
+          select sourceid1, destid1 from migrate_map_newscategorymigration
+          union all
+          select sourceid1, destid1 from migrate_map_tagsmigration
+          union all
+          select sourceid1, destid1 from migrate_map_sectionmigration
+          union all
+          select sourceid1, destid1 from migrate_map_damscategorymigration
+        ) q on t.tid = q.destid1
+      SET t.description = :dsc
+      where q.sourceid1=:id',
+      array(':dsc' => $orig->description, ':id' => $orig->tid)
+    );
+  }
+}
+
+/**
+ * Updates nids/tids in links inside the descriptions of terms.
+ */
+function easyddb_migration_update_7005(&$sandbox) {
+  $patterns = array(
+    array('/node\/(\d+)/'),
+    array('/taxonomy\/term\/(\d+)/'),
+  );
+
+  $maps = array(
+    'description',
+  );
+  $callback_node = function($matches) {
+    // Array of all related migration.
+    $sources = array(
+      'newsMigration',
+      'eventsMigration',
+      'libraryMigration',
+      'pageMigration',
+      'campaignMigration',
+    );
+    foreach ($sources as $source) {
+      $source_migration = Migration::getInstance($source);
+      $source_migration->sourceKeyMap['nid'] = 'nid';
+      $destid = $source_migration->getMap()->lookupDestinationID(array($matches[1]));
+      $nid = $matches[1];
+      if (!empty($destid)) {
+        $nid = current($destid);
+        break;
+      }
     }
+    return "node/{$nid}";
+  };
+
+   $callback_term = function($matches) {
+    // Array of all related migration.
+    $sources = array(
+      'newsCategoryMigration',
+      'eventCategoryMigration',
+      'tagsMigration',
+      'sectionMigration',
+      'damsCategoryMigration'
+    );
+
+    foreach ($sources as $source) {
+      $source_migration = Migration::getInstance($source);
+      $source_migration->sourceKeyMap['tid'] = 'tid';
+      $destid = $source_migration->getMap()->lookupDestinationID(array($matches[1]));
+      $tid = $matches[1];
+      if (!empty($destid)) {
+        $tid = current($destid);
+        break;
+      }
+    }
+    return "taxonomy/term/{$tid}";
+  };
+  $terms = entity_load('taxonomy_term');
+  foreach ($terms as $term) {
+    if (isset($term->{$maps[0]}) && !empty($term->{$maps[0]})) {
+      $term->{$maps[0]} = preg_replace_callback($patterns[0], $callback_node, $term->{$maps[0]});
+      $term->{$maps[0]} = preg_replace_callback($patterns[1], $callback_term, $term->{$maps[0]});
+
+      taxonomy_term_save($term);
+    }
+  }
 }
