@@ -700,6 +700,9 @@ class EasyDDBNewslettersMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_newsletter_image:file_class')->defaultValue('MigrateFileFid');
     $this->addFieldMapping('field_newsletter_image:preserve_files')->defaultValue(TRUE);
     $this->addFieldMapping('field_newsletter_image:alt', 'field_newsletter_image:alt');
+    $this->addFieldMapping('field_newsletter_image:height', 'field_newsletter_image:height');
+    $this->addFieldMapping('field_newsletter_image:width', 'field_newsletter_image:width');
+    $this->addFieldMapping('field_newsletter_image:language', 'field_newsletter_image:language');
     $this->addFieldMapping('field_newsletter_image:title', 'field_newsletter_image:title');
 
     $this->addFieldMapping('field_footer', 'field_footer');
@@ -707,7 +710,13 @@ class EasyDDBNewslettersMigration extends DrupalNode7Migration {
     $this->addFieldMapping('field_footer:format', 'field_footer:format');
 
     $this->addFieldMapping('field_newsletter_items', 'field_newsletter_items')->sourceMigration(array('newsMigration', 'eventsMigration', 'libraryMigration', 'pageMigration', 'campaignMigration'));
+    $this->addFieldMapping('field_newsletter_items:language', 'field_newsletter_items:language');
 
+  }
+
+  public function prepare($entity, $row) {
+    $entity->body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->body['und'][0]['value']);
+    $entity->field_footer['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_footer['und'][0]['value']);
   }
 
   public function prepareRow($row) {
@@ -724,6 +733,20 @@ class EasyDDBNewslettersMigration extends DrupalNode7Migration {
       if ($query->rowCount() == 0) {
         $row->field_newsletter_term = array();
       }
+    }
+
+    if (isset($row->field_newsletter_items) && !empty($row->field_newsletter_items)) {
+      $result =  Database::getConnection('default', 'migration')
+        ->select('node', 'n')
+        ->fields('n', array('nid'))
+        ->condition('n.nid', $row->field_newsletter_items, 'IN')
+        ->execute();
+
+      $nids = array();
+      foreach ($result as $item) {
+        $nids[] = $item->nid;
+      }
+      $row->field_newsletter_items = $nids;
     }
   }
 }
