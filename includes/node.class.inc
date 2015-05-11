@@ -717,6 +717,9 @@ class EasyDDBNewslettersMigration extends DrupalNode7Migration {
   public function prepare($entity, $row) {
     $entity->body['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->body['und'][0]['value']);
     $entity->field_footer['und'][0]['value'] = EasyDDBNewsMigration::setActualData($entity->field_footer['und'][0]['value']);
+    $entity->language = 'und';
+    $items = array($entity->language => !empty($entity->field_newsletter_items) ? current($entity->field_newsletter_items) : array());
+    $entity->field_newsletter_items = $items;
   }
 
   public function prepareRow($row) {
@@ -731,7 +734,7 @@ class EasyDDBNewslettersMigration extends DrupalNode7Migration {
         ->condition('d.tid', $row->field_newsletter_term)
         ->execute();
       if ($query->rowCount() == 0) {
-        $row->field_newsletter_term = array();
+        $row->field_newsletter_term = NULL;
       }
     }
 
@@ -747,6 +750,27 @@ class EasyDDBNewslettersMigration extends DrupalNode7Migration {
         $nids[] = $item->nid;
       }
       $row->field_newsletter_items = $nids;
+      $row->{'field_newsletter_items:language'} = array_intersect_key($nids, $row->{'field_newsletter_items:language'});
     }
   }
+
+  protected function query() {
+    $query =  Database::getConnection('default', 'migration')
+      ->select('field_data_field_newsletter_term', 't');
+    $query->innerJoin('taxonomy_term_data', 'td', 'td.tid=t.field_newsletter_term_tid');
+    $result = $query->fields('t', array('entity_id'))
+      ->execute();
+
+    $nids = array();
+    foreach ($result as $item) {
+      $nids[] = $item->entity_id;
+    }
+
+    $query = parent::query();
+    $query->condition('n.nid', $nids, 'IN');
+
+    return $query;
+  }
+
 }
+

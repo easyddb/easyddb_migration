@@ -94,6 +94,21 @@ class EasyDDBEmailkanonUsersMigration extends Migration {
     $this->addFieldMapping('email', 'email');
     $this->addFieldMapping('subscription', 'subscription');
   }
+
+  public function prepare($e, $r) {
+    $source = 'mailinglistMigration';
+    $ids =  unserialize($r->subscription);
+    $e->subscription = array();
+    foreach ($ids as $key => $id) {
+      $source_migration = Migration::getInstance($source);
+      $source_migration->sourceKeyMap['tid'] = 'tid';
+      $destid = $source_migration->getMap()->lookupDestinationID(array($id));
+      if (!empty($destid)) {
+        $e->subscription[] = current($destid);
+      }
+    }
+    $e->subscription = serialize($e->subscription);
+  }
 }
 
 /**
@@ -238,10 +253,24 @@ class EasyDDBEmailkanonNewslettersMigration extends Migration {
       MigrateDestinationTable::getKeySchema($table_name) // Gets primary key of destination table.
     );
 
+    $query =  Database::getConnection('default', 'migration')
+      ->select('field_data_field_newsletter_term', 't');
+    $query->innerJoin('taxonomy_term_data', 'td', 'td.tid=t.field_newsletter_term_tid');
+    $result = $query->fields('t', array('entity_id'))
+      ->execute();
+
+    $nids = array();
+    foreach ($result as $item) {
+      $nids[] = $item->entity_id;
+    }
+
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
               ->select('emailkanon_newsletters', 'e')
               ->fields('e');
+    $query->innerJoin('node', 'n', 'n.nid=e.nid');
+    $query->condition('n.type', 'newsletter');
+    $query->condition('n.nid', $nids, 'IN');
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
@@ -294,7 +323,10 @@ class EasyDDBEmailkanonMailinglistsMigration extends Migration {
     // Define query for getting source data.
     $query =  Database::getConnection('default', 'migration')
               ->select('emailkanon_mailinglists', 'e')
-              ->fields('e');
+              ->fields('e')
+              ->isNotNull('mailinglist_id')
+              ->condition('mailinglist_id', '', '!=');
+
 
     // Set query for getting source data.
     $this->sourceOptions = array('map_joinable' => FALSE, 'cache_counts' => TRUE, 'cache_key' => 'migrate_' . $this->machineName);
