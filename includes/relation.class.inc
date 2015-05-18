@@ -334,7 +334,7 @@ class EasyDDBEndPointMigration extends Migration {
     $this->addFieldMapping('bundle', 'bundle');
     $this->addFieldMapping('deleted', 'deleted');
     $this->addFieldMapping('entity_id', 'entity_id')->sourceMigration('relationMigration');
-    $this->addFieldMapping('revision_id', 'revision_id')->sourceMigration('relationRevisionMigration');
+    $this->addFieldMapping('revision_id', 'revision_id');
     $this->addFieldMapping('language', 'language');
     $this->addFieldMapping('delta', 'delta');
     $this->addFieldMapping('endpoints_entity_type', 'endpoints_entity_type');
@@ -472,5 +472,14 @@ class EasyDDBEndPointRevisionMigration extends Migration {
         }
       }
     }
+  }
+
+  public function complete($e, $r) {
+    db_update('field_revision_endpoints')
+      ->fields(array(
+        'revision_id' => $e->revision_id
+      ))
+    ->condition('entity_id', $e->entity_id)
+    ->execute();
   }
 }
