@@ -475,7 +475,7 @@ class EasyDDBEndPointRevisionMigration extends Migration {
   }
 
   public function complete($e, $r) {
-    db_update('field_revision_endpoints')
+    db_update('field_data_endpoints')
       ->fields(array(
         'revision_id' => $e->revision_id
       ))
