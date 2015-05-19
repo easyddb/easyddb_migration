@@ -304,6 +304,12 @@ class EasyDDBEndPointMigration extends Migration {
             'default' => 0,
             'alias' => 'f',
           ),
+          'revision_id' => array(
+            'type' => 'int',
+            'not null' => 1,
+            'default' => 0,
+            'alias' => 'f',
+          ),
           'language' => array(
             'type' => 'varchar',
             'length' => 32,
@@ -409,6 +415,12 @@ class EasyDDBEndPointRevisionMigration extends Migration {
             'alias' => 'f',
           ),
           'entity_id' => array(
+            'type' => 'int',
+            'not null' => 1,
+            'default' => 0,
+            'alias' => 'f',
+          ),
+          'revision_id' => array(
             'type' => 'int',
             'not null' => 1,
             'default' => 0,
