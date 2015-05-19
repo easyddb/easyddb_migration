@@ -180,7 +180,7 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
           return "\"fid\":\"{$fid}\"";
         }
         else {
-           return "";
+           return ",";
         }
       },
     $body);
