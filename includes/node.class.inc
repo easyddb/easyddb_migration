@@ -154,9 +154,9 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
 
   public static function setActualData($body) {
     $patterns = array(
-      '/"view_mode":"(\w+)"/',
+      '/"view_mode":"([^,]*)",/',
       '/"fid":"(\d+)"/',
-      '/"data-file_info":"[^\s]*",/'
+      '/"data-file_info":"[^,]*",/',
     );
     return preg_replace_callback($patterns,
       function($matches) {
@@ -170,7 +170,7 @@ class EasyDDBNewsMigration extends DrupalNode7Migration {
             'ding_dams_download_link' => 'easyddb_dams_media_browser_download_link',
           );
           $mode = isset($maps[$matches[1]]) ? $maps[$matches[1]] : 'default';
-          return "\"view_mode\":\"{$mode}\"";
+          return "\"view_mode\":\"{$mode}\",";
         }
         elseif (strstr($matches[0], 'fid')) {
           $source_migration = Migration::getInstance('fileMigration');
